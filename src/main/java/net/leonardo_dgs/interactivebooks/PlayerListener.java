@@ -13,6 +13,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.List;
 
@@ -54,12 +55,16 @@ public final class PlayerListener implements Listener {
             return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
-        if (BooksUtils.getItemInMainHand(event.getPlayer()).getType() != Material.WRITTEN_BOOK)
+
+        ItemStack itemInMainHand = BooksUtils.getItemInMainHand(event.getPlayer());
+
+        if (itemInMainHand.getType() != Material.WRITTEN_BOOK) {
             return;
+        }
         if (!ConfigManager.getConfig().getBoolean("update_books_on_use"))
             return;
 
-        NBTItem nbtItem = new NBTItem(BooksUtils.getItemInMainHand(event.getPlayer()));
+        NBTItem nbtItem = new NBTItem(itemInMainHand);
         if (!nbtItem.hasKey("InteractiveBooks|Book-Id"))
             return;
 
@@ -67,8 +72,16 @@ public final class PlayerListener implements Listener {
         if (book == null)
             return;
 
+        // preserve Generation meta for old book
         ItemStack bookItem = book.getItem(event.getPlayer());
-        bookItem.setAmount(BooksUtils.getItemInMainHand(event.getPlayer()).getAmount());
+        BookMeta newBookMeta = (BookMeta) bookItem.getItemMeta();
+        BookMeta oldBookMeta = (BookMeta) itemInMainHand.getItemMeta();
+        if (oldBookMeta == null || newBookMeta == null)
+            return;
+        newBookMeta.setGeneration(oldBookMeta.getGeneration());
+        bookItem.setItemMeta(newBookMeta);
+
+        bookItem.setAmount(itemInMainHand.getAmount());
         BooksUtils.setItemInMainHand(event.getPlayer(), bookItem);
     }
 }
