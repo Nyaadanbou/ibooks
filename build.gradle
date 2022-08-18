@@ -3,8 +3,13 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-tasks.compileJava.options.encoding = 'UTF-8'
-tasks.compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+}
 
 group = 'net.leonardo_dgs'
 version = '1.6.2'
@@ -28,6 +33,7 @@ dependencies {
     compileOnly 'net.md-5:bungeecord-chat:1.19-R0.1-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.11.1'
     compileOnly 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'dev.jorel:commandapi-core:8.5.0'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     implementation 'de.tr7zw:item-nbt-api:2.10.1-SNAPSHOT'
     implementation 'net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT'
