@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-chat:1.19-R0.1-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.11.1'
     compileOnly 'org.projectlombok:lombok:1.18.24'
@@ -73,4 +73,15 @@ tasks.jar.enabled = false
 
 artifacts {
     archives shadowJar
+}
+
+task deploy {
+    dependsOn shadowJar
+    doLast {
+        exec {
+            workingDir '.'
+            commandLine 'scp', 'build/libs/InteractiveBooks.jar', 'dev:data/devmisc/plugins'
+            commandLine 'scp', 'build/libs/InteractiveBooks.jar', 'mc-main:data/devmisc/plugins'
+        }
+    }
 }
