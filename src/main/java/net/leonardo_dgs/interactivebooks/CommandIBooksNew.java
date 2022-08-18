@@ -15,7 +15,10 @@ public class CommandIBooksNew {
 
     static {
         IBOOKS = ArgumentSuggestions.stringsAsync(info -> CompletableFuture.supplyAsync(() ->
-                InteractiveBooks.getBooks().keySet().stream().map(book -> "\"" + book + "\"").toArray(String[]::new))
+                InteractiveBooks.getBooks().keySet().stream()
+                        .filter(book -> book.startsWith(info.currentArg()))
+                        .map(book -> "'" + book + "'")
+                        .toArray(String[]::new))
         );
     }
 
@@ -41,7 +44,7 @@ public class CommandIBooksNew {
                         })))
                 .withSubcommand(new CommandAPICommand("open")
                         .withPermission("interactivebooks.command.open")
-                        .withArguments(new TextArgument("book-id").replaceSuggestions(IBOOKS))
+                        .withArguments(new TextArgument("book").replaceSuggestions(IBOOKS))
                         .withArguments(new EntitySelectorArgument<Player>("player", EntitySelector.ONE_PLAYER))
                         .executes((sender, args) -> {
                             Player playerToOpen = (Player) args[1];
@@ -60,7 +63,7 @@ public class CommandIBooksNew {
                         }))
                 .withSubcommand(new CommandAPICommand("get")
                         .withPermission("interactivebooks.command.get")
-                        .withArguments(new TextArgument("book-id").replaceSuggestions(IBOOKS))
+                        .withArguments(new TextArgument("book").replaceSuggestions(IBOOKS))
                         .executesPlayer((player, args) -> {
                             String bookIdToGet = PAPIUtil.setPlaceholders(player, (String) args[0]);
                             if (InteractiveBooks.getBook(bookIdToGet) == null) {
@@ -72,7 +75,7 @@ public class CommandIBooksNew {
                         }))
                 .withSubcommand(new CommandAPICommand("give")
                         .withPermission("interactivebooks.command.give")
-                        .withArguments(new TextArgument("book-id").replaceSuggestions(IBOOKS))
+                        .withArguments(new TextArgument("book").replaceSuggestions(IBOOKS))
                         .withArguments(new EntitySelectorArgument<Player>("player", EntitySelector.ONE_PLAYER))
                         .executes((sender, args) -> {
                             Player targetPlayer = (Player) args[1];

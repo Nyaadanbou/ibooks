@@ -81,10 +81,10 @@ public final class InteractiveBooks extends JavaPlugin {
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.replaceLogger(getLogger());
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.disableUpdateCheck();
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.getVersion();
-        registerCommands();
         ConfigManager.loadAll();
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         new Metrics(this, 5483);
+        new CommandIBooksNew();
     }
 
     @Override
@@ -98,10 +98,6 @@ public final class InteractiveBooks extends JavaPlugin {
 
     public BukkitAudiences adventure() {
         return adventure;
-    }
-
-    private void registerCommands() {
-        new CommandIBooksNew();
     }
 
 }
