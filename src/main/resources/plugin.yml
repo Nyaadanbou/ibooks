@@ -5,4 +5,5 @@ api-version: 1.13
 description: ${description}
 author: ${author}
 website: ${website}
+depend: [CommandAPI]
 softdepend: [PlaceholderAPI]
