@@ -24,7 +24,7 @@ public class CommandIBooksNew {
 
     public CommandIBooksNew() {
         new CommandAPICommand("ibooks")
-                .withAliases("interactivebooks", "ibooks", "ib")
+//                .withAliases("interactivebooks", "ibooks", "ib")
                 .withPermission("interactivebooks.command")
                 .withSubcommand(new CommandAPICommand("list")
                         .withPermission("interactivebooks.command.list")
@@ -43,10 +43,23 @@ public class CommandIBooksNew {
                             sender.sendMessage("§eBooks:\n" + sb);
                         })))
                 .withSubcommand(new CommandAPICommand("open")
-                        .withPermission("interactivebooks.command.open")
+                        .withArguments(new TextArgument("book").replaceSuggestions(IBOOKS))
+                        .executesPlayer((sender, args) -> {
+                            String bookIdToOpen = PAPIUtil.setPlaceholders(sender, (String) args[0]);
+                            if (!sender.hasPermission("interactivebooks.command.open") && !sender.hasPermission("interactivebooks.open." + bookIdToOpen)) {
+                                sender.sendMessage("§cYou don't have permission.");
+                                return;
+                            }
+                            if (InteractiveBooks.getBook(bookIdToOpen) == null) {
+                                sender.sendMessage("§cThat book doesn't exists.");
+                                return;
+                            }
+                            InteractiveBooks.getBook(bookIdToOpen).open(sender);
+                        }))
+                .withSubcommand(new CommandAPICommand("open")
                         .withArguments(new TextArgument("book").replaceSuggestions(IBOOKS))
                         .withArguments(new EntitySelectorArgument<Player>("player", EntitySelector.ONE_PLAYER))
-                        .executes((sender, args) -> {
+                        .executesConsole((sender, args) -> {
                             Player playerToOpen = (Player) args[1];
                             String bookIdToOpen = PAPIUtil.setPlaceholders(playerToOpen, (String) args[0]);
                             if (InteractiveBooks.getBook(bookIdToOpen) == null) {
@@ -58,8 +71,7 @@ public class CommandIBooksNew {
                                 return;
                             }
                             InteractiveBooks.getBook(bookIdToOpen).open(playerToOpen);
-                            if (!playerToOpen.equals(sender))
-                                sender.sendMessage("§aBook §6%book_id% §aopened to §6%player%§a.".replace("%book_id%", bookIdToOpen).replace("%player%", playerToOpen.getName()));
+                            sender.sendMessage("§aBook §6%book_id% §aopened to §6%player%§a.".replace("%book_id%", bookIdToOpen).replace("%player%", playerToOpen.getName()));
                         }))
                 .withSubcommand(new CommandAPICommand("get")
                         .withPermission("interactivebooks.command.get")
