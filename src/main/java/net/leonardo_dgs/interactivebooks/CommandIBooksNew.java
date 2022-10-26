@@ -40,18 +40,18 @@ public class CommandIBooksNew {
                                 if (hasNext)
                                     sb.append("§7, ");
                             }
-                            sender.sendMessage("§eBooks:\n" + sb);
+                            sender.sendMessage("§e书籍:\n" + sb);
                         })))
                 .withSubcommand(new CommandAPICommand("open")
                         .withArguments(new TextArgument("book").replaceSuggestions(IBOOKS))
                         .executesPlayer((sender, args) -> {
                             String bookIdToOpen = PAPIUtil.setPlaceholders(sender, (String) args[0]);
                             if (!sender.hasPermission("interactivebooks.command.open") && !sender.hasPermission("interactivebooks.open." + bookIdToOpen)) {
-                                sender.sendMessage("§cYou don't have permission.");
+                                sender.sendMessage("§c你没有使用该指令的权限");
                                 return;
                             }
                             if (InteractiveBooks.getBook(bookIdToOpen) == null) {
-                                sender.sendMessage("§cThat book doesn't exists.");
+                                sender.sendMessage("§c你要查看的书籍不存在.");
                                 return;
                             }
                             InteractiveBooks.getBook(bookIdToOpen).open(sender);
@@ -63,15 +63,11 @@ public class CommandIBooksNew {
                             Player playerToOpen = (Player) args[1];
                             String bookIdToOpen = PAPIUtil.setPlaceholders(playerToOpen, (String) args[0]);
                             if (InteractiveBooks.getBook(bookIdToOpen) == null) {
-                                sender.sendMessage("§cThat book doesn't exists.");
-                                return;
-                            }
-                            if (playerToOpen == null) {
-                                sender.sendMessage("§cThat player isn't connected.");
+                                sender.sendMessage("§c你要查看的书籍不存在.");
                                 return;
                             }
                             InteractiveBooks.getBook(bookIdToOpen).open(playerToOpen);
-                            sender.sendMessage("§aBook §6%book_id% §aopened to §6%player%§a.".replace("%book_id%", bookIdToOpen).replace("%player%", playerToOpen.getName()));
+                            sender.sendMessage("§a已给玩家 §6%player%§a 查看书籍 §6%book_id%§a.".replace("%book_id%", bookIdToOpen).replace("%player%", playerToOpen.getName()));
                         }))
                 .withSubcommand(new CommandAPICommand("get")
                         .withPermission("interactivebooks.command.get")
@@ -79,11 +75,11 @@ public class CommandIBooksNew {
                         .executesPlayer((player, args) -> {
                             String bookIdToGet = PAPIUtil.setPlaceholders(player, (String) args[0]);
                             if (InteractiveBooks.getBook(bookIdToGet) == null) {
-                                player.sendMessage("§cThat book doesn't exists.");
+                                player.sendMessage("§c你要获取的书籍不存在.");
                                 return;
                             }
                             player.getInventory().addItem(InteractiveBooks.getBook(bookIdToGet).getItem(player));
-                            player.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", bookIdToGet));
+                            player.sendMessage("§a你收到了一本书: §6%book_id%§a.".replace("%book_id%", bookIdToGet));
                         }))
                 .withSubcommand(new CommandAPICommand("give")
                         .withPermission("interactivebooks.command.give")
@@ -93,16 +89,12 @@ public class CommandIBooksNew {
                             Player targetPlayer = (Player) args[1];
                             String targetBookId = PAPIUtil.setPlaceholders(targetPlayer, (String) args[0]);
                             if (InteractiveBooks.getBook(targetBookId) == null) {
-                                sender.sendMessage("§cThat book doesn't exists.");
-                                return;
-                            }
-                            if (targetPlayer == null) {
-                                sender.sendMessage("§cThat player isn't connected.");
+                                sender.sendMessage("§c你要给予的书籍不存在.");
                                 return;
                             }
                             targetPlayer.getInventory().addItem(InteractiveBooks.getBook(targetBookId).getItem(targetPlayer));
-                            sender.sendMessage("§aBook §6%book_id% §agiven to §6%player%§a.".replace("%book_id%", targetBookId).replace("%player%", (String) args[1]));
-                            targetPlayer.sendMessage("§aYou have received the book §6%book_id%§a.".replace("%book_id%", targetBookId));
+                            sender.sendMessage("§a已给予玩家 §6%player%§a 书籍 §6%book_id%§a.".replace("%book_id%", targetBookId).replace("%player%", targetPlayer.getName()));
+                            targetPlayer.sendMessage("§a你收到了一本书: §6%book_id%§a.".replace("%book_id%", targetBookId));
                         }))
                 .withSubcommand(new CommandAPICommand("create")
                         .withPermission("interactivebooks.command.create")
@@ -113,7 +105,7 @@ public class CommandIBooksNew {
                         .withArguments(new MultiLiteralArgument("ORIGINAL", "COPY_OF_ORIGINAL", "COPY_OF_COPY", "TATTERED"))
                         .executes((sender, args) -> {
                             if (InteractiveBooks.getBook((String) args[0]) != null) {
-                                sender.sendMessage("§cA book with that id already exists");
+                                sender.sendMessage("§c创建失败, 书籍ID重复.");
                                 return;
                             }
                             String bookId = (String) args[0];
@@ -124,13 +116,13 @@ public class CommandIBooksNew {
                             IBook createdBook = new IBook(bookId, bookName, bookTitle, bookAuthor, (String) args[4], new ArrayList<>(), new ArrayList<>());
                             createdBook.save();
                             InteractiveBooks.registerBook(createdBook);
-                            sender.sendMessage("§aBook successfully created.");
+                            sender.sendMessage("§a已创建新书籍.");
                         }))
                 .withSubcommand(new CommandAPICommand("reload")
                         .withPermission("interactivebooks.command.reload")
                         .executes((sender, args) -> {
                             ConfigManager.loadAll();
-                            sender.sendMessage("§aConfig reloaded!");
+                            sender.sendMessage("§a配置文件已重新载入!");
                         }))
                 .register();
     }
