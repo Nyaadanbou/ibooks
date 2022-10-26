@@ -80,11 +80,7 @@ task deploy {
     doLast {
         exec {
             workingDir '.'
-            commandLine 'scp', 'build/libs/InteractiveBooks.jar', 'mc-main:data/devmisc/plugins'
-        }
-        exec {
-            workingDir '.'
-            commandLine 'scp', 'build/libs/InteractiveBooks.jar', 'dev:data/devmisc/plugins'
+            commandLine 'scp', 'build/libs/InteractiveBooks.jar', 'dev:data/dev/plugins'
         }
     }
 }
