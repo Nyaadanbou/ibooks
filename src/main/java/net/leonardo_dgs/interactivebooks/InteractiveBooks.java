@@ -1,6 +1,6 @@
 package net.leonardo_dgs.interactivebooks;
 
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.leonardo_dgs.interactivebooks.command.IBooksCommands;
 import net.leonardo_dgs.interactivebooks.util.MinecraftVersion;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -15,7 +15,6 @@ public final class InteractiveBooks extends JavaPlugin {
 
     private static InteractiveBooks instance;
     private static final Map<String, IBook> books = new HashMap<>();
-    private BukkitAudiences adventure;
 
     /**
      * Gets the instance of this plugin.
@@ -77,27 +76,23 @@ public final class InteractiveBooks extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        adventure = BukkitAudiences.create(this);
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.replaceLogger(getLogger());
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.disableUpdateCheck();
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.getVersion();
         ConfigManager.loadAll();
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         new Metrics(this, 5483);
-        new CommandIBooksNew();
+        try {
+            new IBooksCommands(this);
+        } catch (Exception e) {
+            getLogger().severe("Failed to initialise commands!");
+            onDisable();
+        }
     }
 
     @Override
     public void onDisable() {
-        if (this.adventure != null) {
-            this.adventure.close();
-            this.adventure = null;
-        }
         instance = null;
-    }
-
-    public BukkitAudiences adventure() {
-        return adventure;
     }
 
 }

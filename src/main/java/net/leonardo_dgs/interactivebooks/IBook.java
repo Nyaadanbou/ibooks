@@ -3,16 +3,9 @@ package net.leonardo_dgs.interactivebooks;
 import de.leonhard.storage.internal.FlatFile;
 import de.leonhard.storage.sections.FlatFileSection;
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import net.kyori.adventure.inventory.Book;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -28,8 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static net.leonardo_dgs.interactivebooks.util.PAPIUtil.setPlaceholders;
-
 public class IBook {
 
     private static final String bookIdKey = "InteractiveBooks|Book-Id";
@@ -39,10 +30,6 @@ public class IBook {
     private List<String> pages;
 
     private final Set<String> openCommands = new HashSet<>();
-
-    @Getter(AccessLevel.PACKAGE)
-    @Setter(AccessLevel.PACKAGE)
-    private CommandOpenBook commandExecutor;
 
     private FlatFile bookConfig;
 
@@ -54,39 +41,17 @@ public class IBook {
      * @param id         the id of the book
      * @param bookConfig configuration from which to take data to crete the book
      */
-    public IBook(String id, FileConfiguration bookConfig) {
-        this(id, bookConfig.getString("name"), bookConfig.getString("title"), bookConfig.getString("author"), bookConfig.getString("generation"),
-                bookConfig.getStringList("lore"), mergeLines(bookConfig.getConfigurationSection("pages")),
-                (((bookConfig.getString("open_command") == null) || Objects.equals(bookConfig.getString("open_command"), "")) ? null : Objects.requireNonNull(bookConfig.getString("open_command")).split(" ")));
-    }
-
     IBook(String id, FlatFile bookConfig) {
-        this(id, bookConfig.getString("name"), bookConfig.getString("title"), bookConfig.getString("author"),
-                bookConfig.getString("generation"), bookConfig.getStringList("lore"), mergeLines(bookConfig.getSection("pages")),
-                (bookConfig.getString("open_command") == null || bookConfig.getString("open_command").equals("")) ? null : bookConfig.getString("open_command").split(" "));
+        this(id,
+                bookConfig.getString("name"),
+                bookConfig.getString("title"),
+                bookConfig.getString("author"),
+                bookConfig.getString("generation"),
+                bookConfig.getStringList("lore"),
+                mergeLines(bookConfig.getSection("pages")),
+                bookConfig.getString("open_command") == null || bookConfig.getString("open_command").equals("") ? null : bookConfig.getString("open_command").split(" ")
+        );
         this.bookConfig = bookConfig;
-    }
-
-    /**
-     * Constructor for {@link IBook} that takes data from the supplied book item.
-     *
-     * @param id   the id of the book
-     * @param book {@link ItemStack} book item from which to take data to crete the book
-     */
-    public IBook(String id, ItemStack book) {
-        this(id, (BookMeta) book.getItemMeta());
-    }
-
-    /**
-     * Constructor for {@link IBook} that takes data from the supplied {@link BookMeta}.
-     *
-     * @param id       the id of the book
-     * @param bookMeta {@link BookMeta} from which to take information to crete the book
-     */
-    public IBook(String id, BookMeta bookMeta) {
-        this.id = id;
-        this.bookMeta = bookMeta;
-        this.setPages(BooksUtils.getPages(bookMeta));
     }
 
     /**
@@ -133,7 +98,7 @@ public class IBook {
     public IBook(String id, String displayName, String title, String author, String generation, List<String> lore, List<String> pages, String... openCommands) {
         this(id, displayName, title, author, lore, pages, openCommands);
         if (generation != null && BooksUtils.isBookGenerationSupported())
-            bookMeta.setGeneration(BooksUtils.getBookGeneration(generation));
+            bookMeta.setGeneration(BooksUtils.ofGeneration(generation));
     }
 
     /**
@@ -151,7 +116,7 @@ public class IBook {
     public IBook(String id, String displayName, String title, String author, Generation generation, List<String> lore, List<String> pages, String... openCommands) {
         this(id, displayName, title, author, lore, pages, openCommands);
         if (generation != null)
-            this.bookMeta.setGeneration(generation);
+            bookMeta.setGeneration(generation);
     }
 
     /**
@@ -160,7 +125,7 @@ public class IBook {
      * @return the book id.
      */
     public String getId() {
-        return this.id;
+        return id;
     }
 
     /**
@@ -173,12 +138,7 @@ public class IBook {
             bookConfig.forceReload();
             InteractiveBooks.getBook(id).open(player);
         } else {
-            Book book = Book.builder()
-                    .title(MiniMessage.miniMessage().parse(setPlaceholders(player, bookMeta.getTitle())))
-                    .author(MiniMessage.miniMessage().parse(setPlaceholders(player, bookMeta.getAuthor())))
-                    .pages(getPagesComponents(player))
-                    .build();
-            InteractiveBooks.getInstance().adventure().player(player).openBook(book);
+            player.openBook(getBookMeta(player));
         }
     }
 
@@ -199,10 +159,10 @@ public class IBook {
      */
     public ItemStack getItem(Player player) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        book.setItemMeta(this.getBookMeta(player));
-        NBTItem nbti = new NBTItem(book);
-        nbti.setString(bookIdKey, this.getId());
-        return nbti.getItem();
+        book.setItemMeta(getBookMeta(player));
+        NBTItem nbtItem = new NBTItem(book);
+        nbtItem.setString(bookIdKey, getId());
+        return nbtItem.getItem();
     }
 
     /**
@@ -225,7 +185,7 @@ public class IBook {
             bookConfig.forceReload();
             return InteractiveBooks.getBook(id).getBookMeta(player);
         } else {
-            return BooksUtils.getBookMeta(bookMeta, this.getPages(), player);
+            return BooksUtils.parseBookMeta(bookMeta, getPages(), player);
         }
     }
 
@@ -262,7 +222,7 @@ public class IBook {
      * @return a {@link Set} containing the commands that can be used to open this book
      */
     public Set<String> getOpenCommands() {
-        return this.openCommands;
+        return openCommands;
     }
 
     /**
@@ -270,25 +230,23 @@ public class IBook {
      */
     public void save() {
         File file = new File(new File(InteractiveBooks.getInstance().getDataFolder(), "books"), getId() + ".yml");
-        BookMeta meta = bookMeta;
         try {
             file.createNewFile();
             YamlConfiguration bookConfig = YamlConfiguration.loadConfiguration(file);
-            bookConfig.set("name", meta.getDisplayName());
-            bookConfig.set("title", meta.getTitle());
-            bookConfig.set("author", meta.getAuthor());
+            bookConfig.set("name", MiniMessage.miniMessage().serialize(bookMeta.displayName()));
+            bookConfig.set("title", MiniMessage.miniMessage().serialize(bookMeta.title()));
+            bookConfig.set("author", MiniMessage.miniMessage().serialize(bookMeta.author()));
             if (BooksUtils.isBookGenerationSupported())
-                bookConfig.set("generation", Optional.ofNullable(meta.getGeneration()).orElse(Generation.ORIGINAL).name());
-            bookConfig.set("lore", meta.getLore());
-            bookConfig.set("open_command", String.join(" ", this.getOpenCommands()));
-            if (this.getPages().isEmpty()) {
+                bookConfig.set("generation", Optional.ofNullable(bookMeta.getGeneration()).orElse(Generation.ORIGINAL).name());
+            bookConfig.set("lore", bookMeta.lore().stream().map(c -> MiniMessage.miniMessage().serialize(c)).toList());
+            bookConfig.set("open_command", String.join(" ", getOpenCommands()));
+            if (getPages().isEmpty()) {
                 List<String> tempPages = new ArrayList<>();
                 tempPages.add("");
                 bookConfig.set("pages.1", tempPages);
             }
-            for (int i = 0; i < this.getPages().size(); i++)
-                bookConfig.set("pages." + (i + 1), this.getPages().get(i).split("\n"));
-
+            for (int i = 0; i < getPages().size(); i++)
+                bookConfig.set("pages." + (i + 1), getPages().get(i).split("\n"));
             bookConfig.save(file);
         } catch (IOException e) {
             e.printStackTrace();
@@ -307,26 +265,7 @@ public class IBook {
     public int hashCode() {
         if (hashCode == null)
             hashCode = getId().hashCode();
-        return this.hashCode;
-    }
-
-    private Component[] getPagesComponents(Player player) {
-        Component[] pagesComponents = new Component[pages.size()];
-        for (int i = 0; i < pagesComponents.length; i++)
-            pagesComponents[i] = BooksUtils.getPage(pages.get(i), player);
-        return pagesComponents;
-    }
-
-    private static List<String> mergeLines(ConfigurationSection section) {
-        List<String> pages = new ArrayList<>();
-        if (section != null) {
-            section.getKeys(false).forEach(key -> {
-                StringBuilder sb = new StringBuilder();
-                section.getStringList(key).forEach(line -> sb.append("\n").append(line));
-                pages.add(sb.toString().replaceFirst("\n", ""));
-            });
-        }
-        return pages;
+        return hashCode;
     }
 
     private static List<String> mergeLines(FlatFileSection section) {
@@ -340,4 +279,5 @@ public class IBook {
         }
         return pages;
     }
+
 }

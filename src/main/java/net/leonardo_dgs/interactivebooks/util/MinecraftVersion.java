@@ -58,15 +58,19 @@ public class MinecraftVersion implements Comparable<MinecraftVersion> {
     }
 
     @Override
+    public int hashCode() {
+        return getMajor() + getMinor() + getBuild();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (obj == this) return true;
-        if (!(obj instanceof MinecraftVersion)) return false;
+        if (!(obj instanceof MinecraftVersion other)) return false;
 
-        MinecraftVersion other = (MinecraftVersion) obj;
         return getMajor() == other.getMajor() &&
-                getMinor() == other.getMinor() &&
-                getBuild() == other.getBuild();
+               getMinor() == other.getMinor() &&
+               getBuild() == other.getBuild();
     }
 
     public static MinecraftVersion getRunningVersion() {

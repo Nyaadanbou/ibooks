@@ -29,4 +29,5 @@ public final class PAPIUtil {
     private static boolean isPlaceholderAPISupported() {
         return PAPI_PLUGIN != null && PAPI_PLUGIN.isEnabled();
     }
+
 }
