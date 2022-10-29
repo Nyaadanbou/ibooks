@@ -71,12 +71,10 @@ public final class PlayerListener implements Listener {
         if (book == null)
             return;
 
-        // preserve Generation meta for old book
+        // ---- Preserve the Generation for old book ----
         ItemStack bookItem = book.getItem(event.getPlayer());
         BookMeta newBookMeta = (BookMeta) bookItem.getItemMeta();
         BookMeta oldBookMeta = (BookMeta) itemInMainHand.getItemMeta();
-        if (oldBookMeta == null || newBookMeta == null)
-            return;
         newBookMeta.setGeneration(oldBookMeta.getGeneration());
         bookItem.setItemMeta(newBookMeta);
 

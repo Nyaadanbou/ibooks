@@ -3,7 +3,7 @@ package net.leonardo_dgs.interactivebooks;
 import de.leonhard.storage.internal.FlatFile;
 import de.leonhard.storage.sections.FlatFileSection;
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.inventory.Book;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,13 +11,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,15 +27,22 @@ public class IBook {
 
     private static final String bookIdKey = "InteractiveBooks|Book-Id";
 
+    // ---- Internal ----
     private final String id;
-    private BookMeta bookMeta;
-    private List<String> pages;
-
-    private final Set<String> openCommands = new HashSet<>();
-
     private FlatFile bookConfig;
 
-    private Integer hashCode;
+    // ---- Item ---- (stored in MiniMessage format)
+    private final String displayName;
+    private final List<String> lore;
+
+    // ---- BookMeta ---- (stored in MiniMessage format)
+    private final String title;
+    private final String author;
+    private final BookMeta.Generation generation;
+    private final List<String> pages;
+
+    // ---- Extra ----
+    private final Set<String> openCommands;
 
     /**
      * Constructor for {@link IBook} that takes data from the supplied configuration.
@@ -42,14 +51,15 @@ public class IBook {
      * @param bookConfig configuration from which to take data to crete the book
      */
     IBook(String id, FlatFile bookConfig) {
-        this(id,
+        this(
+                id,
                 bookConfig.getString("name"),
+                bookConfig.getStringList("lore"),
                 bookConfig.getString("title"),
                 bookConfig.getString("author"),
-                bookConfig.getString("generation"),
-                bookConfig.getStringList("lore"),
+                BooksUtils.ofGeneration(bookConfig.getString("generation")),
                 mergeLines(bookConfig.getSection("pages")),
-                bookConfig.getString("open_command") == null || bookConfig.getString("open_command").equals("") ? null : bookConfig.getString("open_command").split(" ")
+                bookConfig.getStringList("open_command")
         );
         this.bookConfig = bookConfig;
     }
@@ -59,64 +69,59 @@ public class IBook {
      *
      * @param id           the id of the book
      * @param displayName  the display name of the book item
-     * @param title        the title of the book item
-     * @param author       the author of the book item
      * @param lore         the lore of the book item
-     * @param pages        the pages that will be converted to the book item pages
-     * @param openCommands the commands that will open the book
-     */
-    public IBook(String id, String displayName, String title, String author, List<String> lore, List<String> pages, String... openCommands) {
-        this.id = id;
-        BookMeta bookMeta = (BookMeta) new ItemStack(Material.WRITTEN_BOOK).getItemMeta();
-        if (lore == null)
-            lore = new ArrayList<>();
-        if (pages == null)
-            pages = new ArrayList<>();
-        Objects.requireNonNull(bookMeta).setDisplayName(displayName);
-        bookMeta.setTitle(title);
-        bookMeta.setAuthor(author);
-        bookMeta.setLore(lore);
-        this.bookMeta = bookMeta;
-        this.pages = pages;
-        if (openCommands != null)
-            for (String command : openCommands)
-                this.openCommands.add(command.toLowerCase());
-    }
-
-    /**
-     * Constructor for {@link IBook} with the supplied data.
-     *
-     * @param id           the id of the book
-     * @param displayName  the display name of the book item
-     * @param title        the title of the book item
-     * @param author       the author of the book item
-     * @param generation   a string that represents generation of the book item
-     * @param lore         the lore of the book item
-     * @param pages        the pages that will be converted to the book item pages
-     * @param openCommands the commands that will open the book
-     */
-    public IBook(String id, String displayName, String title, String author, String generation, List<String> lore, List<String> pages, String... openCommands) {
-        this(id, displayName, title, author, lore, pages, openCommands);
-        if (generation != null && BooksUtils.isBookGenerationSupported())
-            bookMeta.setGeneration(BooksUtils.ofGeneration(generation));
-    }
-
-    /**
-     * Constructor for {@link IBook} with the supplied data.
-     *
-     * @param id           the id of the book
-     * @param displayName  the display name of the book item
      * @param title        the title of the book item
      * @param author       the author of the book item
      * @param generation   the generation of the book item
-     * @param lore         the lore of the book item
      * @param pages        the pages that will be converted to the book item pages
      * @param openCommands the commands that will open the book
      */
-    public IBook(String id, String displayName, String title, String author, Generation generation, List<String> lore, List<String> pages, String... openCommands) {
-        this(id, displayName, title, author, lore, pages, openCommands);
-        if (generation != null)
-            bookMeta.setGeneration(generation);
+    public IBook(
+            @NotNull String id,
+            @NotNull String displayName,
+            @Nullable List<String> lore,
+            @NotNull String title,
+            @NotNull String author,
+            @NotNull BookMeta.Generation generation,
+            @Nullable List<String> pages,
+            @Nullable List<String> openCommands) {
+        this.id = id;
+        this.displayName = displayName;
+        this.lore = new ArrayList<>();
+        this.title = title;
+        this.author = author;
+        this.generation = generation;
+        this.pages = new ArrayList<>();
+        this.openCommands = new HashSet<>();
+
+        // ---- Selectively add nullable params ----
+
+        if (lore != null) this.lore.addAll(lore);
+        if (pages != null) this.pages.addAll(pages);
+        if (openCommands != null)
+            openCommands.stream().map(s -> s.toLowerCase(Locale.ROOT)).forEach(this.openCommands::add);
+    }
+
+    /**
+     * Constructor for {@link IBook} with the supplied data.
+     *
+     * @param id          the id of the book
+     * @param displayName the display name of the book item
+     * @param lore        the lore of the book item
+     * @param title       the title of the book item
+     * @param author      the author of the book item
+     * @param generation  the generation of the book item
+     * @param pages       the pages that will be converted to the book item pages
+     */
+    public IBook(
+            @NotNull String id,
+            @NotNull String displayName,
+            @Nullable List<String> lore,
+            @NotNull String title,
+            @NotNull String author,
+            @NotNull BookMeta.Generation generation,
+            @Nullable List<String> pages) {
+        this(id, displayName, lore, title, author, generation, pages, null);
     }
 
     /**
@@ -138,7 +143,9 @@ public class IBook {
             bookConfig.forceReload();
             InteractiveBooks.getBook(id).open(player);
         } else {
-            player.openBook(getBookMeta(player));
+            Book.Builder builder = Book.builder(); // Opening a book for a player only requires page content
+            pages.forEach(p -> builder.addPage(BooksUtils.parsePage(p, player)));
+            player.openBook(builder);
         }
     }
 
@@ -159,43 +166,45 @@ public class IBook {
      */
     public ItemStack getItem(Player player) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        book.setItemMeta(getBookMeta(player));
+        updateBookMeta(book, player);
         NBTItem nbtItem = new NBTItem(book);
         nbtItem.setString(bookIdKey, getId());
         return nbtItem.getItem();
     }
 
     /**
-     * Gets the {@link BookMeta} without replacing placeholders.
-     *
-     * @return the {@link BookMeta} of the book
-     */
-    public BookMeta getBookMeta() {
-        return this.getBookMeta(null);
-    }
-
-    /**
      * Gets the {@link BookMeta} replacing its placeholders with the specified player data.
      *
      * @param player the player to get the data from for replacing placeholders
-     * @return the {@link BookMeta} with placeholders replaced with the specified player data
      */
-    public BookMeta getBookMeta(Player player) {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void updateBookMeta(ItemStack book, Player player) {
         if (bookConfig.hasChanged()) {
             bookConfig.forceReload();
-            return InteractiveBooks.getBook(id).getBookMeta(player);
+            InteractiveBooks.getBook(id).updateBookMeta(book, player);
         } else {
-            return BooksUtils.parseBookMeta(bookMeta, getPages(), player);
-        }
-    }
+            BookMeta bookMeta = (BookMeta) book.getItemMeta();
 
-    /**
-     * Sets the {@link BookMeta} of this book to the specified one.
-     *
-     * @param bookMeta the {@link BookMeta} to set
-     */
-    public void setBookMeta(BookMeta bookMeta) {
-        this.bookMeta = bookMeta;
+            // ---- Set placeholders for displayName, title, author, lore ----
+            Optional.ofNullable(this.displayName)
+                    .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
+                    .ifPresent(bookMeta::displayName);
+            Optional.ofNullable(this.title)
+                    .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
+                    .ifPresent(bookMeta::title);
+            Optional.ofNullable(this.author)
+                    .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
+                    .ifPresent(bookMeta::author);
+            bookMeta.lore(this.lore.stream()
+                    .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
+                    .toList());
+            bookMeta.setGeneration(generation);
+
+            // ---- Set placeholders for pages ----
+            pages.forEach(page -> bookMeta.addPages(BooksUtils.parsePage(page, player)));
+
+            book.setItemMeta(bookMeta);
+        }
     }
 
     /**
@@ -205,15 +214,6 @@ public class IBook {
      */
     public List<String> getPages() {
         return pages;
-    }
-
-    /**
-     * Sets the book pages to the specified ones.
-     *
-     * @param pages the {@link List} of the book pages to set.
-     */
-    public void setPages(List<String> pages) {
-        this.pages = pages;
     }
 
     /**
@@ -233,12 +233,12 @@ public class IBook {
         try {
             file.createNewFile();
             YamlConfiguration bookConfig = YamlConfiguration.loadConfiguration(file);
-            bookConfig.set("name", MiniMessage.miniMessage().serialize(bookMeta.displayName()));
-            bookConfig.set("title", MiniMessage.miniMessage().serialize(bookMeta.title()));
-            bookConfig.set("author", MiniMessage.miniMessage().serialize(bookMeta.author()));
+            bookConfig.set("name", displayName);
+            bookConfig.set("title", title);
+            bookConfig.set("author", author);
             if (BooksUtils.isBookGenerationSupported())
-                bookConfig.set("generation", Optional.ofNullable(bookMeta.getGeneration()).orElse(Generation.ORIGINAL).name());
-            bookConfig.set("lore", bookMeta.lore().stream().map(c -> MiniMessage.miniMessage().serialize(c)).toList());
+                bookConfig.set("generation", Optional.ofNullable(generation).orElse(Generation.ORIGINAL).name());
+            bookConfig.set("lore", lore);
             bookConfig.set("open_command", String.join(" ", getOpenCommands()));
             if (getPages().isEmpty()) {
                 List<String> tempPages = new ArrayList<>();
@@ -263,9 +263,7 @@ public class IBook {
 
     @Override
     public int hashCode() {
-        if (hashCode == null)
-            hashCode = getId().hashCode();
-        return hashCode;
+        return id.hashCode();
     }
 
     private static List<String> mergeLines(FlatFileSection section) {

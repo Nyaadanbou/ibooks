@@ -10,7 +10,6 @@ import net.leonardo_dgs.interactivebooks.command.IBooksCommands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.meta.BookMeta;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CommandCreate extends AbstractCommand {
@@ -40,7 +39,7 @@ public class CommandCreate extends AbstractCommand {
                     String author = context.get("author");
                     BookMeta.Generation generation = context.get("generation");
 
-                    IBook createdBook = new IBook(bookId, name, title, author, generation, new ArrayList<>(), new ArrayList<>());
+                    IBook createdBook = new IBook(bookId, name, null, title, author, generation, null);
                     createdBook.save();
                     InteractiveBooks.registerBook(createdBook);
                     sender.sendMessage("§a已创建新书籍!");

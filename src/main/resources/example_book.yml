@@ -17,13 +17,14 @@ generation: ORIGINAL
 
 # Item's lore
 lore:
-- Example lore 1
-- Example lore 2
+  - Example lore 1
+  - Example lore 2
 
 # Command to open this book
 # You can remove this by setting it to ''
-# Separate multiple commands with a space
-open_command: 'examplebook'
+# Write command on each line
+open_command:
+  - examplebook
 
 # For the placeholders to work correctly
 # you have to download the Vault plugin:
@@ -34,14 +35,14 @@ open_command: 'examplebook'
 # /papi reload
 pages:
   '1':
-  - '<hover:show_text:"I''m a tooltip">Hover here to see a tooltip</hover:show_text>'
-  - '<hover:show_text:"Run the command "/examplecommand""><click:run_command:/examplecommand>Click here to run a command<reset>'
-  - '<click:open_url:https://www.spigotmc.org/resources/45604/>Click here to open a link</click>'
+    - '<hover:show_text:"I''m a tooltip">Hover here to see a tooltip</hover:show_text>'
+    - '<hover:show_text:"Run the command "/examplecommand""><click:run_command:/examplecommand>Click here to run a command<reset>'
+    - '<click:open_url:https://www.spigotmc.org/resources/45604/>Click here to open a link</click>'
   '2':
-  - '<red>Example placeholders</red>'
-  - ''
-  - 'Name: <green>%player_name%</green>'
-  - 'Level: <gold>%player_level%</gold>'
-  - 'Gamemode: <red>%player_gamemode%</red>'
-  - 'Balance: <gold>%vault_eco_balance%</gold>'
-  - 'Online players: <dark_red>%server_online%</dark_red>'
+    - '<red>Example placeholders</red>'
+    - ''
+    - 'Name: <green>%player_name%</green>'
+    - 'Level: <gold>%player_level%</gold>'
+    - 'Gamemode: <red>%player_gamemode%</red>'
+    - 'Balance: <gold>%vault_eco_balance%</gold>'
+    - 'Online players: <dark_red>%server_online%</dark_red>'
