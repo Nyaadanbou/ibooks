@@ -22,6 +22,7 @@ public class CommandGive extends AbstractCommand {
     public void register() {
         Command<CommandSender> giveBookCommand = manager.commandBuilder("ibooks")
                 .literal("give")
+                .permission("interactivebooks.command.give")
                 .argument(IBookArgument.of("book"))
                 .argument(PlayerArgument.of("player"))
                 .handler(context -> {

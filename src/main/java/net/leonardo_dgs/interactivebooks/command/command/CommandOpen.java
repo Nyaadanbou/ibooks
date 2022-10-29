@@ -23,6 +23,7 @@ public class CommandOpen extends AbstractCommand {
     public void register() {
         Command<CommandSender> openBookCommand = manager.commandBuilder("ibooks")
                 .literal("open")
+                .permission("interactivebooks.command.open")
                 .argument(IBookArgument.of("book"))
                 .argument(PlayerArgument.optional("player"))
                 .handler(context -> {

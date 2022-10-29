@@ -22,6 +22,7 @@ public class CommandCreate extends AbstractCommand {
     public void register() {
         Command<CommandSender> createBookCommand = manager.commandBuilder("ibooks")
                 .literal("create")
+                .permission("interactivebooks.command.create")
                 .argument(StringArgument.of("book-id"))
                 .argument(StringArgument.of("name"))
                 .argument(StringArgument.of("title"))

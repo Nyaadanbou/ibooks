@@ -19,6 +19,7 @@ public class CommandList extends AbstractCommand {
     public void register() {
         Command<CommandSender> listAllBooksCommand = manager.commandBuilder("ibooks")
                 .literal("list")
+                .permission("interactivebooks.command.list")
                 .handler(context -> {
                     CommandSender sender = context.getSender();
                     StringBuilder sb = new StringBuilder();

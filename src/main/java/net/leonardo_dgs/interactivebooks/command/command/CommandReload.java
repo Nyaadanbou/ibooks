@@ -19,6 +19,7 @@ public class CommandReload extends AbstractCommand {
     public void register() {
         Command<CommandSender> reloadCommand = manager.commandBuilder("ibooks")
                 .literal("reload")
+                .permission("interactivebooks.command.reload")
                 .handler(context -> {
                     CommandSender sender = context.getSender();
                     ConfigManager.loadAll();

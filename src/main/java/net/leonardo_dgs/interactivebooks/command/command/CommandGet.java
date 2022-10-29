@@ -21,6 +21,7 @@ public class CommandGet extends AbstractCommand {
     public void register() {
         Command<CommandSender> getBookCommand = manager.commandBuilder("ibooks")
                 .literal("get")
+                .permission("interactivebooks.command.get")
                 .argument(IBookArgument.of("book"))
                 .senderType(Player.class)
                 .handler(context -> {
