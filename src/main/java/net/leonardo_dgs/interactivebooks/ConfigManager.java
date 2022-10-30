@@ -19,7 +19,8 @@ public final class ConfigManager {
     private static Config config;
 
     public static void loadAll() {
-        config = SimplixBuilder.fromFile(new File(InteractiveBooks.getInstance().getDataFolder().getPath(), "config.yml"))
+        config = SimplixBuilder
+                .fromFile(new File(InteractiveBooks.getInstance().getDataFolder().getPath(), "config.yml"))
                 .setReloadSettings(ReloadSettings.INTELLIGENT)
                 .addInputStreamFromResource("config.yml")
                 .createConfig();
@@ -46,7 +47,8 @@ public final class ConfigManager {
         for (File bookFile : Objects.requireNonNull(booksFolder.listFiles())) {
             if (bookFile.getName().endsWith(".yml")) {
                 String bookId = bookFile.getName().substring(0, bookFile.getName().length() - 4);
-                SimplixBuilder.fromFile(bookFile)
+                SimplixBuilder
+                        .fromFile(bookFile)
                         .setReloadSettings(ReloadSettings.INTELLIGENT)
                         .reloadCallback(flatFile -> {
                             InteractiveBooks.unregisterBook(bookId);
