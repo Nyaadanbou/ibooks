@@ -15,6 +15,7 @@ public final class InteractiveBooks extends JavaPlugin {
 
     private static InteractiveBooks instance;
     private static final Map<String, IBook> books = new HashMap<>();
+    private ItemMigrator migrator;
 
     /**
      * Gets the instance of this plugin.
@@ -28,8 +29,7 @@ public final class InteractiveBooks extends JavaPlugin {
     /**
      * Gets the registered books.
      *
-     * @return a {@link Map} with book ids as keys and the registered books
-     * ({@link IBook}) as values
+     * @return a {@link Map} with book ids as keys and the registered books ({@link IBook}) as values
      */
     public static Map<String, IBook> getBooks() {
         return Collections.unmodifiableMap(books);
@@ -39,8 +39,7 @@ public final class InteractiveBooks extends JavaPlugin {
      * Gets an {@link IBook} by its id.
      *
      * @param id the id of the book to get
-     * @return the book with the specified id if it's registered, or null if not
-     * found
+     * @return the book with the specified id if it's registered, or null if not found
      * @see #registerBook(IBook)
      */
     public static IBook getBook(String id) {
@@ -68,20 +67,44 @@ public final class InteractiveBooks extends JavaPlugin {
         }
     }
 
+    /**
+     * Gets the book ID migrator.
+     *
+     * @return the book ID migrator
+     */
+    public static ItemMigrator getMigrator() {
+        return instance.migrator;
+    }
+
     @Override
     public void onEnable() {
         instance = this;
+
+        // ---- Initialise item ID migrator ----
+        migrator = new ItemMigrator();
+
+        // ---- Check platform compatibility ----
         if (MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.8.8"))) {
             getLogger().log(Level.WARNING, "This Minecraft version is not supported, please use 1.8.8 or newer");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+
+        // ---- NBT-API stuff ----
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.replaceLogger(getLogger());
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.disableUpdateCheck();
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.getVersion();
+
+        // ---- Load all files ----
         ConfigManager.loadAll();
+
+        // ---- Register listeners ----
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+
+        // ---- Metrics ----
         new Metrics(this, 5483);
+
+        // ---- Register commands ----
         try {
             new IBooksCommands(this);
         } catch (Exception e) {

@@ -11,12 +11,16 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public final class ConfigManager {
 
     @Getter
     private static Config config;
+    @Getter
+    private static Config migration;
 
     public static void loadAll() {
         config = SimplixBuilder
@@ -24,7 +28,13 @@ public final class ConfigManager {
                 .setReloadSettings(ReloadSettings.INTELLIGENT)
                 .addInputStreamFromResource("config.yml")
                 .createConfig();
+        migration = SimplixBuilder
+                .fromFile(new File(InteractiveBooks.getInstance().getDataFolder(), "migration.yml"))
+                .setReloadSettings(ReloadSettings.INTELLIGENT)
+                .addInputStreamFromResource("migration.yml")
+                .createConfig();
         loadBookConfigs();
+        loadMigrationConfigs();
     }
 
     private static void loadBookConfigs() {
@@ -56,6 +66,15 @@ public final class ConfigManager {
                         })
                         .createConfig();
             }
+        }
+    }
+
+    private static void loadMigrationConfigs() {
+        List<Map<String, String>> migration = getMigration().getListParameterized("migration");
+        for (Map<String, String> entry : migration) {
+            String oldBookId = entry.get("old");
+            String newBookId = entry.get("new");
+            InteractiveBooks.getMigrator().addEntry(oldBookId, newBookId);
         }
     }
 

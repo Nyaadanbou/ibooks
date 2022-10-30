@@ -57,17 +57,20 @@ public final class PlayerListener implements Listener {
 
         ItemStack itemInMainHand = event.getPlayer().getInventory().getItemInMainHand();
 
-        if (itemInMainHand.getType() != Material.WRITTEN_BOOK) {
+        if (itemInMainHand.getType() != Material.WRITTEN_BOOK)
             return;
-        }
         if (!ConfigManager.getConfig().getBoolean("update_books_on_use"))
             return;
 
         NBTItem nbtItem = new NBTItem(itemInMainHand);
-        if (!nbtItem.hasKey("InteractiveBooks|Book-Id"))
+        if (!nbtItem.hasKey(Constants.BOOK_ID_KEY))
             return;
 
-        IBook book = InteractiveBooks.getBook(nbtItem.getString("InteractiveBooks|Book-Id"));
+        if (InteractiveBooks.getMigrator().shouldMigrate(nbtItem)) {
+            InteractiveBooks.getMigrator().migrate(nbtItem);
+        }
+
+        IBook book = InteractiveBooks.getBook(nbtItem.getString(Constants.BOOK_ID_KEY));
         if (book == null)
             return;
 

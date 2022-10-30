@@ -25,8 +25,6 @@ import java.util.Set;
 
 public class IBook {
 
-    private static final String bookIdKey = "InteractiveBooks|Book-Id";
-
     // ---- Internal ----
     private final String id;
     private FlatFile bookConfig;
@@ -168,7 +166,7 @@ public class IBook {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         updateBookMeta(book, player);
         NBTItem nbtItem = new NBTItem(book);
-        nbtItem.setString(bookIdKey, getId());
+        nbtItem.setString(Constants.BOOK_ID_KEY, getId());
         return nbtItem.getItem();
     }
 

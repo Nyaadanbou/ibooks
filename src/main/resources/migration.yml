@@ -1,0 +1,8 @@
+#
+# Migration for book IDs
+
+migration:
+  - old: oldBookId1
+    new: newBookId1
+  - old: oldBookId2
+    new: newBookId2
