@@ -70,6 +70,7 @@ public final class ConfigManager {
     }
 
     private static void loadMigrationConfigs() {
+        InteractiveBooks.getMigrator().clearEntry();
         List<Map<String, String>> migration = getMigration().getListParameterized("migration");
         for (Map<String, String> entry : migration) {
             String oldBookId = entry.get("old");

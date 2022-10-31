@@ -27,6 +27,10 @@ public class ItemMigrator {
         migrationEntries.remove(oldBookId.toLowerCase(Locale.ROOT));
     }
 
+    public void clearEntry() {
+        migrationEntries.clear();
+    }
+
     public void migrate(NBTItem bookItem) {
         String oldBookId = bookItem.getString(Constants.BOOK_ID_KEY);
         String newBookId = migrationEntries.get(oldBookId.toLowerCase(Locale.ROOT));
