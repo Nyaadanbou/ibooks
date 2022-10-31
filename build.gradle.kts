@@ -49,9 +49,6 @@ dependencies {
     // Libraries that needs to be shaded
     implementation("de.tr7zw", "item-nbt-api", "2.10.1-SNAPSHOT")
     implementation("com.github.Simplix-Softworks", "SimplixStorage", "3.2.5")
-//    implementation("net.kyori", "adventure-api", "4.11.0")
-//    implementation("net.kyori", "adventure-text-minimessage", "4.11.0")
-//    implementation("net.kyori", "adventure-platform-bukkit", "4.1.2")
     implementation("org.bstats", "bstats-bukkit", "3.0.0")
     val cloudVersion = "1.7.1"
     implementation("cloud.commandframework", "cloud-paper", cloudVersion)
@@ -85,7 +82,6 @@ tasks {
         archiveFileName.set("${project.name}-${project.version}.jar")
         sequenceOf(
             "de.tr7zw",
-//            "net.kyori",
             "org.bstats",
             "de.leonhard.storage",
             "cloud.commandframework",
