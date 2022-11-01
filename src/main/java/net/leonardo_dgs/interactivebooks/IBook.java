@@ -269,7 +269,7 @@ public class IBook {
         if (section != null) {
             section.singleLayerKeySet().forEach(key -> {
                 StringBuilder sb = new StringBuilder();
-                section.getStringList(key).forEach(line -> sb.append("\n").append(line));
+                section.getStringList(key).forEach(line -> sb.append("\n").append(line == null ? "" : line));
                 pages.add(sb.toString().replaceFirst("\n", ""));
             });
         }
