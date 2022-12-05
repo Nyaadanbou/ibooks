@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "net.leonardo_dgs"
-version = "1.6.2"
+version = "1.6.3"
 description = "Create cool interactive books!"
 
 repositories {

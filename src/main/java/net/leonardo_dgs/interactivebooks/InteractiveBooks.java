@@ -1,10 +1,14 @@
 package net.leonardo_dgs.interactivebooks;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.leonardo_dgs.interactivebooks.command.IBooksCommands;
 import net.leonardo_dgs.interactivebooks.util.MinecraftVersion;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,7 +26,7 @@ public final class InteractiveBooks extends JavaPlugin {
      *
      * @return an instance of the plugin
      */
-    public static InteractiveBooks getInstance() {
+    public static @NotNull InteractiveBooks getInstance() {
         return instance;
     }
 
@@ -31,7 +35,7 @@ public final class InteractiveBooks extends JavaPlugin {
      *
      * @return a {@link Map} with book ids as keys and the registered books ({@link IBook}) as values
      */
-    public static Map<String, IBook> getBooks() {
+    public static @NotNull Map<String, IBook> getBooks() {
         return Collections.unmodifiableMap(books);
     }
 
@@ -42,8 +46,21 @@ public final class InteractiveBooks extends JavaPlugin {
      * @return the book with the specified id if it's registered, or null if not found
      * @see #registerBook(IBook)
      */
-    public static IBook getBook(String id) {
+    public static @Nullable IBook getBook(@NotNull String id) {
         return books.get(id);
+    }
+
+    /**
+     * Gets an {@link IBook} by an itemStack.
+     *
+     * @param itemStack the itemStack of the book to get
+     * @return the book with the specified id if it's registered, or null if not found
+     * @see #registerBook(IBook)
+     */
+    public static @Nullable IBook getBook(@NotNull ItemStack itemStack) {
+        NBTItem nbtItem = new NBTItem(itemStack);
+        if (!nbtItem.hasKey(Constants.BOOK_ID_KEY)) return null;
+        return InteractiveBooks.getBook(nbtItem.getString(Constants.BOOK_ID_KEY));
     }
 
     /**
@@ -51,7 +68,7 @@ public final class InteractiveBooks extends JavaPlugin {
      *
      * @param book the book id to register
      */
-    public static void registerBook(IBook book) {
+    public static void registerBook(@NotNull IBook book) {
         books.put(book.getId(), book);
     }
 
@@ -60,7 +77,7 @@ public final class InteractiveBooks extends JavaPlugin {
      *
      * @param id the book id to unregister
      */
-    public static void unregisterBook(String id) {
+    public static void unregisterBook(@NotNull String id) {
         IBook book = getBook(id);
         if (book != null) {
             books.remove(id);
@@ -72,7 +89,7 @@ public final class InteractiveBooks extends JavaPlugin {
      *
      * @return the book ID migrator
      */
-    public static ItemMigrator getMigrator() {
+    public static @NotNull ItemMigrator getMigrator() {
         return instance.migrator;
     }
 
