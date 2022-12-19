@@ -12,14 +12,8 @@ import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import cloud.commandframework.paper.PaperCommandManager;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.ComponentMessageThrowable;
 import net.leonardo_dgs.interactivebooks.InteractiveBooks;
-import net.leonardo_dgs.interactivebooks.command.command.CommandCreate;
-import net.leonardo_dgs.interactivebooks.command.command.CommandGet;
-import net.leonardo_dgs.interactivebooks.command.command.CommandGive;
-import net.leonardo_dgs.interactivebooks.command.command.CommandList;
-import net.leonardo_dgs.interactivebooks.command.command.CommandOpen;
-import net.leonardo_dgs.interactivebooks.command.command.CommandReload;
+import net.leonardo_dgs.interactivebooks.command.command.*;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class IBooksCommands extends PaperCommandManager<CommandSender> {
