@@ -53,7 +53,9 @@ dependencies {
     implementation("org.bstats", "bstats-bukkit", "3.0.0")
     val cloudVersion = "1.7.1"
     implementation("cloud.commandframework", "cloud-paper", cloudVersion)
-    implementation("cloud.commandframework", "cloud-minecraft-extras", cloudVersion)
+    implementation("cloud.commandframework", "cloud-minecraft-extras", cloudVersion) {
+        exclude("net.kyori")
+    }
 }
 
 indra {
@@ -63,6 +65,7 @@ indra {
 bukkit {
     main = "net.leonardo_dgs.interactivebooks.InteractiveBooks"
     name = project.name
+    version = "${project.version}"
     description = project.description
     apiVersion = "1.19"
     depend = listOf("helper")
@@ -73,7 +76,7 @@ bukkit {
 
 tasks {
     jar {
-        enabled = false
+        archiveClassifier.set("noshade")
     }
     build {
         dependsOn(shadowJar)
@@ -92,29 +95,31 @@ tasks {
             relocate(it, "net.leonardo_dgs.interactivebooks.lib.$it")
         }
     }
-    processResources {
-        val tokens = mapOf(
-            "project.version" to project.version
-        )
-        inputs.properties(tokens)
-    }
+//    processResources {
+//        val tokens = mapOf(
+//            "project.version" to project.version
+//        )
+//        inputs.properties(tokens)
+//    }
     task("deploy") {
         dependsOn(build)
         doLast {
             exec {
-                workingDir("build/libs")
-                commandLine("scp", shadowJar.get().archiveFileName.get(), "dev:data/dev/plugins")
+                commandLine("rsync", "${shadowJar.get().archiveFile.get()}", "dev:data/dev/plugins")
             }
         }
     }
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(tasks["javadocJar"])
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["shadowJar"])
+            from(components["java"])
         }
     }
 }
