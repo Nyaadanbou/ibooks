@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "net.leonardo_dgs"
-version = "1.6.3"
+version = "1.6.4"
 description = "Create cool interactive books!"
 
 repositories {
@@ -48,10 +48,10 @@ dependencies {
     compileOnly("me.clip", "placeholderapi", "2.11.2")
 
     // Libraries that needs to be shaded
-    implementation("de.tr7zw", "item-nbt-api", "2.10.1-SNAPSHOT")
+    implementation("de.tr7zw", "item-nbt-api", "2.11.1")
     implementation("com.github.Simplix-Softworks", "SimplixStorage", "3.2.5")
     implementation("org.bstats", "bstats-bukkit", "3.0.0")
-    val cloudVersion = "1.7.1"
+    val cloudVersion = "1.8.0"
     implementation("cloud.commandframework", "cloud-paper", cloudVersion)
     implementation("cloud.commandframework", "cloud-minecraft-extras", cloudVersion) {
         exclude("net.kyori")
@@ -105,7 +105,7 @@ tasks {
         dependsOn(build)
         doLast {
             exec {
-                commandLine("rsync", "${shadowJar.get().archiveFile.get()}", "dev:data/dev/plugins")
+                commandLine("rsync", "${shadowJar.get().archiveFile.get()}", "dev:data/dev/jar")
             }
         }
     }
