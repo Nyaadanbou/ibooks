@@ -63,7 +63,7 @@ public final class PlayerListener implements Listener {
             return;
 
         NBTItem nbtItem = new NBTItem(itemInMainHand);
-        if (!nbtItem.hasKey(Constants.BOOK_ID_KEY))
+        if (!nbtItem.hasTag(Constants.BOOK_ID_KEY))
             return;
 
         if (InteractiveBooks.getMigrator().shouldMigrate(nbtItem)) {

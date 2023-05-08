@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "net.leonardo_dgs"
-version = "1.6.4"
+version = "1.6.5"
 description = "Create cool interactive books!"
 
 repositories {
@@ -38,17 +38,17 @@ repositories {
 
 dependencies {
     // API
-    compileOnly("io.papermc.paper", "paper-api", "1.19.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper", "paper-api", "1.19.4-R0.1-SNAPSHOT")
     compileOnly("org.jetbrains", "annotations", "23.0.0")
     compileOnly("org.projectlombok", "lombok", "1.18.24")
     annotationProcessor("org.projectlombok", "lombok", "1.18.24")
 
     // Plugin libraries
     compileOnly("me.lucko", "helper", "5.6.10")
-    compileOnly("me.clip", "placeholderapi", "2.11.2")
+    compileOnly("me.clip", "placeholderapi", "2.11.3")
 
     // Libraries that needs to be shaded
-    implementation("de.tr7zw", "item-nbt-api", "2.11.1")
+    implementation("de.tr7zw", "item-nbt-api", "2.11.2")
     implementation("com.github.Simplix-Softworks", "SimplixStorage", "3.2.5")
     implementation("org.bstats", "bstats-bukkit", "3.0.0")
     val cloudVersion = "1.8.0"

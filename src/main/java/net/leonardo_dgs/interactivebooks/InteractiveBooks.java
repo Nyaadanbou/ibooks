@@ -59,7 +59,7 @@ public final class InteractiveBooks extends JavaPlugin {
      */
     public static @Nullable IBook getBook(@NotNull ItemStack itemStack) {
         NBTItem nbtItem = new NBTItem(itemStack);
-        if (!nbtItem.hasKey(Constants.BOOK_ID_KEY)) return null;
+        if (!nbtItem.hasTag(Constants.BOOK_ID_KEY)) return null;
         return InteractiveBooks.getBook(nbtItem.getString(Constants.BOOK_ID_KEY));
     }
 

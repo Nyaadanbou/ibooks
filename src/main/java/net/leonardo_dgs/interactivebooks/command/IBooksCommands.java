@@ -32,7 +32,7 @@ public class IBooksCommands extends PaperCommandManager<CommandSender> {
     public IBooksCommands(InteractiveBooks plugin) throws Exception {
         super(
                 plugin,
-                AsynchronousCommandExecutionCoordinator.<CommandSender>newBuilder().build(),
+                AsynchronousCommandExecutionCoordinator.<CommandSender>builder().build(),
                 Function.identity(),
                 Function.identity()
         );
