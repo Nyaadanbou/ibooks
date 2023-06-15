@@ -2,7 +2,6 @@ package net.leonardo_dgs.interactivebooks;
 
 import de.leonhard.storage.internal.FlatFile;
 import de.leonhard.storage.sections.FlatFileSection;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
@@ -169,20 +168,21 @@ public class IBook {
     public ItemStack getItem(Player player) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         updateBookMeta(book, player);
-        NBTItem nbtItem = new NBTItem(book);
-        nbtItem.setString(Constants.BOOK_ID_KEY, getId());
-        return nbtItem.getItem();
+        return BooksUtils.setBookId(book, this.getId());
     }
 
     /**
-     * Gets the {@link BookMeta} replacing its placeholders with the specified player data.
+     * Updates the {@link BookMeta} replacing its placeholders with the specified player data.
      *
      * @param player the player to get the data from for replacing placeholders
      */
     public void updateBookMeta(ItemStack book, Player player) {
         if (bookConfig.hasChanged()) {
             bookConfig.forceReload();
-            InteractiveBooks.getBook(id).updateBookMeta(book, player);
+            IBook iBook = InteractiveBooks.getBook(id);
+            if (iBook != null) {
+                iBook.updateBookMeta(book, player);
+            }
         } else {
             BookMeta bookMeta = (BookMeta) book.getItemMeta();
 
@@ -230,8 +230,7 @@ public class IBook {
             bookConfig.set("name", displayName);
             bookConfig.set("title", title);
             bookConfig.set("author", author);
-            if (BooksUtils.isBookGenerationSupported())
-                bookConfig.set("generation", Optional.ofNullable(generation).orElse(Generation.ORIGINAL).name());
+            bookConfig.set("generation", Optional.ofNullable(generation).orElse(Generation.ORIGINAL).name());
             bookConfig.set("lore", lore);
             bookConfig.set("open_command", String.join(" ", getOpenCommands()));
             if (getPages().isEmpty()) {

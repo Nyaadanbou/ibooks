@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public final class ConfigManager {
+public final class Settings {
     @Getter
     private static Config config;
     @Getter
     private static Config updater;
 
-    public static void loadAll() {
+    public static void load() {
         config = SimplixBuilder
             .fromFile(new File(InteractiveBooks.getInstance().getDataFolder().getPath(), "config.yml"))
             .setReloadSettings(ReloadSettings.INTELLIGENT)
@@ -32,6 +32,7 @@ public final class ConfigManager {
             .setReloadSettings(ReloadSettings.INTELLIGENT)
             .addInputStreamFromResource("updater.yml")
             .createConfig();
+
         loadBookConfig();
         loadUpdaterConfig();
     }
@@ -76,5 +77,9 @@ public final class ConfigManager {
             String newBookId = entry.get("new");
             InteractiveBooks.getInstance().getUpdater().addEntry(oldBookId, newBookId);
         }
+    }
+
+    private Settings() {
+        throw new UnsupportedOperationException("This class cannot be instantiated");
     }
 }

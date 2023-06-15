@@ -5,24 +5,27 @@ import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
 import cloud.commandframework.context.CommandContext;
-import me.lucko.helper.utils.annotation.NonnullByDefault;
 import net.leonardo_dgs.interactivebooks.IBook;
 import net.leonardo_dgs.interactivebooks.InteractiveBooks;
 import org.bukkit.command.CommandSender;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.framework.qual.DefaultQualifier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.function.BiFunction;
 
-@NonnullByDefault
+@DefaultQualifier(NotNull.class)
 public class IBookArgument extends CommandArgument<CommandSender, IBook> {
-    public IBookArgument(boolean required,
+    public IBookArgument(
+        boolean required,
         String name,
         String defaultValue,
-        @Nullable BiFunction<CommandContext<CommandSender>, String, List<String>> suggestionsProvider,
-        ArgumentDescription defaultDescription) {
+        BiFunction<CommandContext<CommandSender>, String, List<String>> suggestionsProvider,
+        ArgumentDescription defaultDescription
+    ) {
         super(required, name, new Parser(), defaultValue, IBook.class, suggestionsProvider, defaultDescription);
     }
 
@@ -44,8 +47,8 @@ public class IBookArgument extends CommandArgument<CommandSender, IBook> {
             final CommandContext<CommandSender> commandContext,
             final Queue<String> inputQueue
         ) {
-            String input = inputQueue.peek();
-            IBook book = InteractiveBooks.getBook(input);
+            @Nullable String input = inputQueue.peek();
+            @Nullable IBook book = InteractiveBooks.getBook(input);
             if (book == null) {
                 return ArgumentParseResult.failure(new IllegalArgumentException("你指定的书籍不存在"));
             }

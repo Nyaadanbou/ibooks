@@ -1,10 +1,12 @@
 package net.leonardo_dgs.interactivebooks;
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import net.leonardo_dgs.interactivebooks.util.BooksUtils;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Used to update the internal ID stored in book items.
@@ -30,14 +32,14 @@ public class BookIdentityUpdater {
         updateEntries.clear();
     }
 
-    public void update(NBTItem bookItem) {
-        String oldBookId = bookItem.getString(Constants.BOOK_ID_KEY);
+    public void update(ItemStack bookItem) {
+        String oldBookId = Objects.requireNonNull(BooksUtils.getBookId(bookItem));
         String newBookId = updateEntries.get(oldBookId.toLowerCase(Locale.ROOT));
-        bookItem.setString(Constants.BOOK_ID_KEY, newBookId);
+        BooksUtils.setBookId(bookItem, newBookId);
     }
 
-    public boolean shouldUpdate(NBTItem bookItem) {
-        String oldBookId = bookItem.getString(Constants.BOOK_ID_KEY);
+    public boolean shouldUpdate(ItemStack bookItem) {
+        String oldBookId = Objects.requireNonNull(BooksUtils.getBookId(bookItem));
         return updateEntries.containsKey(oldBookId.toLowerCase(Locale.ROOT));
     }
 }

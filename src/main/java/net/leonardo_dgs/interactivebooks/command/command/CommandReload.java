@@ -1,7 +1,7 @@
 package net.leonardo_dgs.interactivebooks.command.command;
 
 import cloud.commandframework.Command;
-import net.leonardo_dgs.interactivebooks.ConfigManager;
+import net.leonardo_dgs.interactivebooks.Settings;
 import net.leonardo_dgs.interactivebooks.InteractiveBooks;
 import net.leonardo_dgs.interactivebooks.command.AbstractCommand;
 import net.leonardo_dgs.interactivebooks.command.IBooksCommands;
@@ -21,7 +21,7 @@ public class CommandReload extends AbstractCommand {
             .permission("interactivebooks.command.reload")
             .handler(context -> {
                 CommandSender sender = context.getSender();
-                ConfigManager.loadAll();
+                Settings.load();
                 sender.sendMessage("§a配置文件已重新载入!");
             })
             .build();

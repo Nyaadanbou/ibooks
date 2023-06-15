@@ -2,6 +2,7 @@ package net.leonardo_dgs.interactivebooks;
 
 import lombok.Getter;
 import net.leonardo_dgs.interactivebooks.command.IBooksCommands;
+import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -56,9 +57,11 @@ public final class InteractiveBooks extends JavaPlugin {
      * @see #registerBook(IBook)
      */
     public static @Nullable IBook getBook(@NotNull ItemStack itemStack) {
-        NBTItem nbtItem = new NBTItem(itemStack);
-        if (!nbtItem.hasTag(Constants.BOOK_ID_KEY)) return null;
-        return InteractiveBooks.getBook(nbtItem.getString(Constants.BOOK_ID_KEY));
+        String bookId = BooksUtils.getBookId(itemStack);
+        if (bookId != null) {
+            return BOOKS.get(bookId);
+        }
+        return null;
     }
 
     /**
@@ -91,7 +94,7 @@ public final class InteractiveBooks extends JavaPlugin {
         updater = new BookIdentityUpdater();
 
         // ---- Load all files ----
-        ConfigManager.loadAll();
+        Settings.load();
 
         // ---- Register listeners ----
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);

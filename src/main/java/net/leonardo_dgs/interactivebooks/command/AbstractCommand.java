@@ -11,6 +11,6 @@ public abstract class AbstractCommand {
         this.manager = manager;
     }
 
-    abstract public void register();
+    public abstract void register();
 }
 

@@ -1,22 +1,21 @@
 package net.leonardo_dgs.interactivebooks.util;
 
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.leonardo_dgs.interactivebooks.Constants;
+import net.leonardo_dgs.interactivebooks.InteractiveBooks;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta.Generation;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class BooksUtils {
-    @Getter
-    private static final boolean isBookGenerationSupported = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.10"));
-
-    private BooksUtils() {
-        throw new UnsupportedOperationException("This class cannot be instantiated");
-    }
-
-    public static @Nullable Generation ofGeneration(String generation) {
+    public static @Nullable Generation ofGeneration(@Nullable String generation) {
         if (generation == null) {
             return null;
         }
@@ -40,5 +39,35 @@ public final class BooksUtils {
 
     public static @NotNull Component asComponent(@NotNull String s) {
         return MiniMessage.miniMessage().deserialize(s);
+    }
+
+    public static @Nullable String getBookId(@NotNull ItemStack item) {
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta == null)
+            return null;
+
+        String bookId = null;
+        NamespacedKey bookIdKey = new NamespacedKey(InteractiveBooks.getInstance(), Constants.BOOK_ID_KEY);
+        PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+        if (container.has(bookIdKey, PersistentDataType.STRING)) {
+            bookId = container.get(bookIdKey, PersistentDataType.STRING);
+        }
+        return bookId;
+    }
+
+    public static @Nullable ItemStack setBookId(@NotNull ItemStack item, @NotNull String bookId) {
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta == null)
+            return null;
+
+        NamespacedKey bookIdKey = new NamespacedKey(InteractiveBooks.getInstance(), Constants.BOOK_ID_KEY);
+        PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+        container.set(bookIdKey, PersistentDataType.STRING, bookId);
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
+    private BooksUtils() {
+        throw new UnsupportedOperationException("This class cannot be instantiated");
     }
 }
