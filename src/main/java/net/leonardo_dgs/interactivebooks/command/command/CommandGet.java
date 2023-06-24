@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class CommandGet extends AbstractCommand {
-
     public CommandGet(InteractiveBooks plugin, IBooksCommands manager) {
         super(plugin, manager);
     }
@@ -21,21 +20,20 @@ public class CommandGet extends AbstractCommand {
     @Override
     public void register() {
         Command<CommandSender> getBookCommand = manager.commandBuilder("ibooks")
-                .literal("get")
-                .permission("interactivebooks.command.get")
-                .argument(IBookArgument.of("book"))
-                .senderType(Player.class)
-                .handler(context -> {
-                    Player sender = (Player) context.getSender();
-                    IBook book = context.get("book");
-                    ItemStack bookItem = book.getItem(sender);
-                    manager.taskRecipe().begin(context).synchronous(ctx -> {
-                        sender.getWorld().dropItem(sender.getLocation(), bookItem);
-                        sender.sendMessage("§a获得书籍: §6%book_id%§a.".replace("%book_id%", book.getId()));
-                    }).execute();
-                })
-                .build();
+            .literal("get")
+            .permission("interactivebooks.command.get")
+            .argument(IBookArgument.of("book"))
+            .senderType(Player.class)
+            .handler(context -> {
+                Player sender = (Player) context.getSender();
+                IBook book = context.get("book");
+                ItemStack bookItem = book.getItem(sender);
+                manager.taskRecipe().begin(context).synchronous(ctx -> {
+                    sender.getWorld().dropItem(sender.getLocation(), bookItem);
+                    sender.sendMessage("§a获得书籍: §6%book_id%§a.".replace("%book_id%", book.getId()));
+                }).execute();
+            })
+            .build();
         manager.register(List.of(getBookCommand));
     }
-
 }

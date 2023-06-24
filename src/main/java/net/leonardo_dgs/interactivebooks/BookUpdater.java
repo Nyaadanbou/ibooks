@@ -11,11 +11,10 @@ import java.util.Map;
  * <p>
  * Known as Remorse medicine :)
  */
-public class ItemMigrator {
-
+public class BookUpdater {
     private final Map<String, String> migrationEntries;
 
-    public ItemMigrator() {
+    public BookUpdater() {
         migrationEntries = new HashMap<>();
     }
 
@@ -41,5 +40,4 @@ public class ItemMigrator {
         String oldBookId = bookItem.getString(Constants.BOOK_ID_KEY);
         return migrationEntries.containsKey(oldBookId.toLowerCase(Locale.ROOT));
     }
-
 }

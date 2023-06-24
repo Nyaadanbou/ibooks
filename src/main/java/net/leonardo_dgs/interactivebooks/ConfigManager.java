@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class ConfigManager {
-
     @Getter
     private static Config config;
     @Getter
@@ -24,15 +23,15 @@ public final class ConfigManager {
 
     public static void loadAll() {
         config = SimplixBuilder
-                .fromFile(new File(InteractiveBooks.getInstance().getDataFolder().getPath(), "config.yml"))
-                .setReloadSettings(ReloadSettings.INTELLIGENT)
-                .addInputStreamFromResource("config.yml")
-                .createConfig();
+            .fromFile(new File(InteractiveBooks.getInstance().getDataFolder().getPath(), "config.yml"))
+            .setReloadSettings(ReloadSettings.INTELLIGENT)
+            .addInputStreamFromResource("config.yml")
+            .createConfig();
         migration = SimplixBuilder
-                .fromFile(new File(InteractiveBooks.getInstance().getDataFolder(), "migration.yml"))
-                .setReloadSettings(ReloadSettings.INTELLIGENT)
-                .addInputStreamFromResource("migration.yml")
-                .createConfig();
+            .fromFile(new File(InteractiveBooks.getInstance().getDataFolder(), "migration.yml"))
+            .setReloadSettings(ReloadSettings.INTELLIGENT)
+            .addInputStreamFromResource("migration.yml")
+            .createConfig();
         loadBookConfigs();
         loadMigrationConfigs();
     }
@@ -58,13 +57,13 @@ public final class ConfigManager {
             if (bookFile.getName().endsWith(".yml")) {
                 String bookId = bookFile.getName().substring(0, bookFile.getName().length() - 4);
                 SimplixBuilder
-                        .fromFile(bookFile)
-                        .setReloadSettings(ReloadSettings.INTELLIGENT)
-                        .reloadCallback(flatFile -> {
-                            InteractiveBooks.unregisterBook(bookId);
-                            InteractiveBooks.registerBook(new IBook(bookId, flatFile));
-                        })
-                        .createConfig();
+                    .fromFile(bookFile)
+                    .setReloadSettings(ReloadSettings.INTELLIGENT)
+                    .reloadCallback(flatFile -> {
+                        InteractiveBooks.unregisterBook(bookId);
+                        InteractiveBooks.registerBook(new IBook(bookId, flatFile));
+                    })
+                    .createConfig();
             }
         }
     }
@@ -78,5 +77,4 @@ public final class ConfigManager {
             InteractiveBooks.getMigrator().addEntry(oldBookId, newBookId);
         }
     }
-
 }

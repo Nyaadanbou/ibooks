@@ -3,7 +3,6 @@ package net.leonardo_dgs.interactivebooks.command;
 import net.leonardo_dgs.interactivebooks.InteractiveBooks;
 
 public abstract class AbstractCommand {
-
     protected final InteractiveBooks plugin;
     protected final IBooksCommands manager;
 
@@ -13,6 +12,5 @@ public abstract class AbstractCommand {
     }
 
     abstract public void register();
-
 }
 

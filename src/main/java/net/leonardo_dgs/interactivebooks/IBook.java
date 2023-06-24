@@ -16,15 +16,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class IBook {
-
     // ---- Internal ----
     private final String id;
     private FlatFile bookConfig;
@@ -50,14 +44,14 @@ public class IBook {
      */
     IBook(String id, FlatFile bookConfig) {
         this(
-                id,
-                bookConfig.getString("name"),
-                bookConfig.getStringList("lore"),
-                bookConfig.getString("title"),
-                bookConfig.getString("author"),
-                BooksUtils.ofGeneration(bookConfig.getString("generation")),
-                mergeLines(bookConfig.getSection("pages")),
-                bookConfig.getStringList("open_command")
+            id,
+            bookConfig.getString("name"),
+            bookConfig.getStringList("lore"),
+            bookConfig.getString("title"),
+            bookConfig.getString("author"),
+            BooksUtils.ofGeneration(bookConfig.getString("generation")),
+            mergeLines(bookConfig.getSection("pages")),
+            bookConfig.getStringList("open_command")
         );
         this.bookConfig = bookConfig;
     }
@@ -75,14 +69,15 @@ public class IBook {
      * @param openCommands the commands that will open the book
      */
     public IBook(
-            @NotNull String id,
-            @NotNull String displayName,
-            @Nullable List<String> lore,
-            @NotNull String title,
-            @NotNull String author,
-            @NotNull BookMeta.Generation generation,
-            @Nullable List<String> pages,
-            @Nullable List<String> openCommands) {
+        @NotNull String id,
+        @NotNull String displayName,
+        @Nullable List<String> lore,
+        @NotNull String title,
+        @NotNull String author,
+        @NotNull BookMeta.Generation generation,
+        @Nullable List<String> pages,
+        @Nullable List<String> openCommands
+    ) {
         this.id = id;
         this.displayName = displayName;
         this.lore = new ArrayList<>();
@@ -96,8 +91,9 @@ public class IBook {
 
         if (lore != null) this.lore.addAll(lore);
         if (pages != null) this.pages.addAll(pages);
-        if (openCommands != null)
+        if (openCommands != null) {
             openCommands.stream().map(s -> s.toLowerCase(Locale.ROOT)).forEach(this.openCommands::add);
+        }
     }
 
     /**
@@ -112,13 +108,14 @@ public class IBook {
      * @param pages       the pages that will be converted to the book item pages
      */
     public IBook(
-            @NotNull String id,
-            @NotNull String displayName,
-            @Nullable List<String> lore,
-            @NotNull String title,
-            @NotNull String author,
-            @NotNull BookMeta.Generation generation,
-            @Nullable List<String> pages) {
+        @NotNull String id,
+        @NotNull String displayName,
+        @Nullable List<String> lore,
+        @NotNull String title,
+        @NotNull String author,
+        @NotNull BookMeta.Generation generation,
+        @Nullable List<String> pages
+    ) {
         this(id, displayName, lore, title, author, generation, pages, null);
     }
 
@@ -185,17 +182,17 @@ public class IBook {
 
             // ---- Set placeholders for displayName, title, author, lore ----
             Optional.ofNullable(this.displayName)
-                    .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
-                    .ifPresent(bookMeta::displayName);
+                .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
+                .ifPresent(bookMeta::displayName);
             Optional.ofNullable(this.title)
-                    .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
-                    .ifPresent(bookMeta::title);
+                .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
+                .ifPresent(bookMeta::title);
             Optional.ofNullable(this.author)
-                    .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
-                    .ifPresent(bookMeta::author);
+                .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
+                .ifPresent(bookMeta::author);
             bookMeta.lore(this.lore.stream()
-                    .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
-                    .toList());
+                .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
+                .toList());
             bookMeta.setGeneration(generation);
 
             // ---- Set placeholders for pages ----
@@ -275,5 +272,4 @@ public class IBook {
         }
         return pages;
     }
-
 }

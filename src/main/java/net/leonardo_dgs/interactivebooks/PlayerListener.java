@@ -17,7 +17,6 @@ import org.bukkit.inventory.meta.BookMeta;
 import java.util.List;
 
 public final class PlayerListener implements Listener {
-
     private static final boolean MC_AFTER_1_14 = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.14"));
 
     @EventHandler
@@ -84,5 +83,4 @@ public final class PlayerListener implements Listener {
         bookItem.setAmount(itemInMainHand.getAmount());
         event.getPlayer().getInventory().setItemInMainHand(bookItem);
     }
-
 }

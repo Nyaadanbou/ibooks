@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
 public final class PAPIUtil {
-
     private static final Plugin PAPI_PLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
 
     public static String setPlaceholders(String text) {
@@ -29,5 +28,4 @@ public final class PAPIUtil {
     private static boolean isPlaceholderAPISupported() {
         return PAPI_PLUGIN != null && PAPI_PLUGIN.isEnabled();
     }
-
 }

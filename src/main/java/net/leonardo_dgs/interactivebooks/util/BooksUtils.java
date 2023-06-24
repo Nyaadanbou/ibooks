@@ -8,7 +8,6 @@ import org.bukkit.inventory.meta.BookMeta.Generation;
 import org.jetbrains.annotations.NotNull;
 
 public class BooksUtils {
-
     @Getter
     private static final boolean isBookGenerationSupported = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.10"));
 
@@ -28,5 +27,4 @@ public class BooksUtils {
     public static Component asComponent(@NotNull String s) {
         return MiniMessage.miniMessage().deserialize(s);
     }
-
 }

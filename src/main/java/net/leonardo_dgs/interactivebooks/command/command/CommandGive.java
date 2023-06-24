@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class CommandGive extends AbstractCommand {
-
     public CommandGive(InteractiveBooks plugin, IBooksCommands manager) {
         super(plugin, manager);
     }
@@ -22,26 +21,25 @@ public class CommandGive extends AbstractCommand {
     @Override
     public void register() {
         Command<CommandSender> giveBookCommand = manager.commandBuilder("ibooks")
-                .literal("give")
-                .permission("interactivebooks.command.give")
-                .argument(IBookArgument.of("book"))
-                .argument(PlayerArgument.of("player"))
-                .handler(context -> {
-                    CommandSender sender = context.getSender();
-                    IBook book = context.get("book");
-                    Player player = context.get("player");
-                    ItemStack bookItem = book.getItem(player);
-                    manager.taskRecipe().begin(context).synchronous(ctx -> {
-                        player.getWorld().dropItem(player.getLocation(), bookItem);
-                        player.sendMessage("§a你收到了一本书: §6%book_id%§a.".replace("%book_id%", book.getId()));
-                        sender.sendMessage("§a已给予玩家 §6%player%§a 书籍: §6%book_id%§a."
-                                .replace("%book_id%", book.getId())
-                                .replace("%player%", player.getName())
-                        );
-                    }).execute();
-                })
-                .build();
+            .literal("give")
+            .permission("interactivebooks.command.give")
+            .argument(IBookArgument.of("book"))
+            .argument(PlayerArgument.of("player"))
+            .handler(context -> {
+                CommandSender sender = context.getSender();
+                IBook book = context.get("book");
+                Player player = context.get("player");
+                ItemStack bookItem = book.getItem(player);
+                manager.taskRecipe().begin(context).synchronous(ctx -> {
+                    player.getWorld().dropItem(player.getLocation(), bookItem);
+                    player.sendMessage("§a你收到了一本书: §6%book_id%§a.".replace("%book_id%", book.getId()));
+                    sender.sendMessage("§a已给予玩家 §6%player%§a 书籍: §6%book_id%§a."
+                        .replace("%book_id%", book.getId())
+                        .replace("%player%", player.getName())
+                    );
+                }).execute();
+            })
+            .build();
         manager.register(List.of(giveBookCommand));
     }
-
 }

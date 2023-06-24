@@ -2,7 +2,6 @@ package net.leonardo_dgs.interactivebooks;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.leonardo_dgs.interactivebooks.command.IBooksCommands;
-import net.leonardo_dgs.interactivebooks.util.MinecraftVersion;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -13,13 +12,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 public final class InteractiveBooks extends JavaPlugin {
+    private static InteractiveBooks INSTANCE;
+    private static Map<String, IBook> BOOKS;
 
-    private static InteractiveBooks instance;
-    private static final Map<String, IBook> books = new HashMap<>();
-    private ItemMigrator migrator;
+    private BookUpdater updater;
 
     /**
      * Gets the instance of this plugin.
@@ -27,7 +25,7 @@ public final class InteractiveBooks extends JavaPlugin {
      * @return an instance of the plugin
      */
     public static @NotNull InteractiveBooks getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -36,7 +34,7 @@ public final class InteractiveBooks extends JavaPlugin {
      * @return a {@link Map} with book ids as keys and the registered books ({@link IBook}) as values
      */
     public static @NotNull Map<String, IBook> getBooks() {
-        return Collections.unmodifiableMap(books);
+        return Collections.unmodifiableMap(BOOKS);
     }
 
     /**
@@ -47,7 +45,7 @@ public final class InteractiveBooks extends JavaPlugin {
      * @see #registerBook(IBook)
      */
     public static @Nullable IBook getBook(@NotNull String id) {
-        return books.get(id);
+        return BOOKS.get(id);
     }
 
     /**
@@ -69,7 +67,7 @@ public final class InteractiveBooks extends JavaPlugin {
      * @param book the book id to register
      */
     public static void registerBook(@NotNull IBook book) {
-        books.put(book.getId(), book);
+        BOOKS.put(book.getId(), book);
     }
 
     /**
@@ -80,7 +78,7 @@ public final class InteractiveBooks extends JavaPlugin {
     public static void unregisterBook(@NotNull String id) {
         IBook book = getBook(id);
         if (book != null) {
-            books.remove(id);
+            BOOKS.remove(id);
         }
     }
 
@@ -89,23 +87,17 @@ public final class InteractiveBooks extends JavaPlugin {
      *
      * @return the book ID migrator
      */
-    public static @NotNull ItemMigrator getMigrator() {
-        return instance.migrator;
+    public static @NotNull BookUpdater getMigrator() {
+        return INSTANCE.updater;
     }
 
     @Override
     public void onEnable() {
-        instance = this;
+        INSTANCE = this;
+        BOOKS = new HashMap<>();
 
         // ---- Initialise item ID migrator ----
-        migrator = new ItemMigrator();
-
-        // ---- Check platform compatibility ----
-        if (MinecraftVersion.getRunningVersion().isBefore(MinecraftVersion.parse("1.8.8"))) {
-            getLogger().log(Level.WARNING, "This Minecraft version is not supported, please use 1.8.8 or newer");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
+        updater = new BookUpdater();
 
         // ---- NBT-API stuff ----
         de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.replaceLogger(getLogger());
@@ -125,14 +117,12 @@ public final class InteractiveBooks extends JavaPlugin {
         try {
             new IBooksCommands(this);
         } catch (Exception e) {
-            getLogger().severe("Failed to initialise commands!");
-            onDisable();
+            getLogger().severe("Failed to initialize commands!");
         }
     }
 
     @Override
     public void onDisable() {
-        instance = null;
+        INSTANCE = null;
     }
-
 }
