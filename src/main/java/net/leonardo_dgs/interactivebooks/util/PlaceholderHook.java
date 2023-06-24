@@ -2,12 +2,11 @@ package net.leonardo_dgs.interactivebooks.util;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
-public final class PAPIUtil {
+public final class PlaceholderHook {
     private static final Plugin PAPI_PLUGIN = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
 
     public static String setPlaceholders(String text) {
@@ -17,12 +16,12 @@ public final class PAPIUtil {
     public static String setPlaceholders(CommandSender sender, String text) {
         if (isPlaceholderAPISupported()) {
             if (sender instanceof OfflinePlayer) {
-                text = PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, text);
+                return PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, text);
             } else {
-                text = PlaceholderAPI.setPlaceholders(null, text);
+                return PlaceholderAPI.setPlaceholders(null, text);
             }
         }
-        return ChatColor.translateAlternateColorCodes('&', text);
+        return text;
     }
 
     private static boolean isPlaceholderAPISupported() {

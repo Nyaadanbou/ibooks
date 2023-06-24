@@ -21,7 +21,7 @@ public class BooksUtils {
 
     @NotNull
     public static String parsePlaceholder(Player player, String s) {
-        return PAPIUtil.setPlaceholders(player, s);
+        return PlaceholderHook.setPlaceholders(player, s);
     }
 
     public static Component asComponent(@NotNull String s) {
