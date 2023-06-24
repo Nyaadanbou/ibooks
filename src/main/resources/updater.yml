@@ -1,7 +1,7 @@
 #
-# Migration for book IDs
+# Book Updater
 
-migration:
+updates:
   - old: oldBookId1
     new: newBookId1
   - old: oldBookId2

@@ -19,7 +19,7 @@ public final class ConfigManager {
     @Getter
     private static Config config;
     @Getter
-    private static Config migration;
+    private static Config updater;
 
     public static void loadAll() {
         config = SimplixBuilder
@@ -27,16 +27,16 @@ public final class ConfigManager {
             .setReloadSettings(ReloadSettings.INTELLIGENT)
             .addInputStreamFromResource("config.yml")
             .createConfig();
-        migration = SimplixBuilder
-            .fromFile(new File(InteractiveBooks.getInstance().getDataFolder(), "migration.yml"))
+        updater = SimplixBuilder
+            .fromFile(new File(InteractiveBooks.getInstance().getDataFolder(), "updater.yml"))
             .setReloadSettings(ReloadSettings.INTELLIGENT)
-            .addInputStreamFromResource("migration.yml")
+            .addInputStreamFromResource("updater.yml")
             .createConfig();
-        loadBookConfigs();
-        loadMigrationConfigs();
+        loadBookConfig();
+        loadUpdaterConfig();
     }
 
-    private static void loadBookConfigs() {
+    private static void loadBookConfig() {
         for (String key : new ArrayList<>(InteractiveBooks.getBooks().keySet()))
             InteractiveBooks.unregisterBook(key);
 
@@ -68,10 +68,10 @@ public final class ConfigManager {
         }
     }
 
-    private static void loadMigrationConfigs() {
+    private static void loadUpdaterConfig() {
         InteractiveBooks.getMigrator().clearEntry();
-        List<Map<String, String>> migration = getMigration().getListParameterized("migration");
-        for (Map<String, String> entry : migration) {
+        List<Map<String, String>> updates = getUpdater().getListParameterized("updates");
+        for (Map<String, String> entry : updates) {
             String oldBookId = entry.get("old");
             String newBookId = entry.get("new");
             InteractiveBooks.getMigrator().addEntry(oldBookId, newBookId);

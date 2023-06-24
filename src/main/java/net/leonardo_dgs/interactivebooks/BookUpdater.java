@@ -12,32 +12,32 @@ import java.util.Map;
  * Known as Remorse medicine :)
  */
 public class BookUpdater {
-    private final Map<String, String> migrationEntries;
+    private final Map<String, String> updateEntries;
 
     public BookUpdater() {
-        migrationEntries = new HashMap<>();
+        updateEntries = new HashMap<>();
     }
 
     public void addEntry(String oldBookId, String newBookId) {
-        migrationEntries.put(oldBookId.toLowerCase(Locale.ROOT), newBookId);
+        updateEntries.put(oldBookId.toLowerCase(Locale.ROOT), newBookId);
     }
 
     public void removeEntry(String oldBookId) {
-        migrationEntries.remove(oldBookId.toLowerCase(Locale.ROOT));
+        updateEntries.remove(oldBookId.toLowerCase(Locale.ROOT));
     }
 
     public void clearEntry() {
-        migrationEntries.clear();
+        updateEntries.clear();
     }
 
     public void migrate(NBTItem bookItem) {
         String oldBookId = bookItem.getString(Constants.BOOK_ID_KEY);
-        String newBookId = migrationEntries.get(oldBookId.toLowerCase(Locale.ROOT));
+        String newBookId = updateEntries.get(oldBookId.toLowerCase(Locale.ROOT));
         bookItem.setString(Constants.BOOK_ID_KEY, newBookId);
     }
 
     public boolean shouldMigrate(NBTItem bookItem) {
         String oldBookId = bookItem.getString(Constants.BOOK_ID_KEY);
-        return migrationEntries.containsKey(oldBookId.toLowerCase(Locale.ROOT));
+        return updateEntries.containsKey(oldBookId.toLowerCase(Locale.ROOT));
     }
 }
