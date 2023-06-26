@@ -11,7 +11,7 @@ plugins {
 project.ext.set("name", "InteractiveBooks")
 
 group = "net.leonardo_dgs"
-version = "1.6.5"
+version = "1.6.6"
 description = "Create cool interactive books!"
 
 dependencies {
