@@ -1,5 +1,6 @@
 package net.leonardo_dgs.interactivebooks;
 
+import lombok.Getter;
 import net.leonardo_dgs.interactivebooks.command.IBooksCommands;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +16,8 @@ public final class InteractiveBooks extends JavaPlugin {
     private static InteractiveBooks INSTANCE;
     private static Map<String, IBook> BOOKS;
 
-    private BookUpdater updater;
+    @Getter
+    private BookIdentityUpdater updater;
 
     /**
      * Gets the instance of this plugin.
@@ -80,22 +82,13 @@ public final class InteractiveBooks extends JavaPlugin {
         }
     }
 
-    /**
-     * Gets the book ID migrator.
-     *
-     * @return the book ID migrator
-     */
-    public static @NotNull BookUpdater getMigrator() {
-        return INSTANCE.updater;
-    }
-
     @Override
     public void onEnable() {
         INSTANCE = this;
         BOOKS = new HashMap<>();
 
-        // ---- Initialise item ID migrator ----
-        updater = new BookUpdater();
+        // ---- Initialize ID updater ----
+        updater = new BookIdentityUpdater();
 
         // ---- Load all files ----
         ConfigManager.loadAll();

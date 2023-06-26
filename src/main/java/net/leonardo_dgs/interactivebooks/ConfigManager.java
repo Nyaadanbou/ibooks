@@ -69,12 +69,12 @@ public final class ConfigManager {
     }
 
     private static void loadUpdaterConfig() {
-        InteractiveBooks.getMigrator().clearEntry();
+        InteractiveBooks.getInstance().getUpdater().clearEntry();
         List<Map<String, String>> updates = getUpdater().getListParameterized("updates");
         for (Map<String, String> entry : updates) {
             String oldBookId = entry.get("old");
             String newBookId = entry.get("new");
-            InteractiveBooks.getMigrator().addEntry(oldBookId, newBookId);
+            InteractiveBooks.getInstance().getUpdater().addEntry(oldBookId, newBookId);
         }
     }
 }

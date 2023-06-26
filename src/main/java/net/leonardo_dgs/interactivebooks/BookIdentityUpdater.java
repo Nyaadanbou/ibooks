@@ -9,12 +9,12 @@ import java.util.Map;
 /**
  * Used to update the internal ID stored in book items.
  * <p>
- * Known as Remorse medicine :)
+ * Known as remorse medicine :)
  */
-public class BookUpdater {
+public class BookIdentityUpdater {
     private final Map<String, String> updateEntries;
 
-    public BookUpdater() {
+    public BookIdentityUpdater() {
         updateEntries = new HashMap<>();
     }
 
@@ -30,13 +30,13 @@ public class BookUpdater {
         updateEntries.clear();
     }
 
-    public void migrate(NBTItem bookItem) {
+    public void update(NBTItem bookItem) {
         String oldBookId = bookItem.getString(Constants.BOOK_ID_KEY);
         String newBookId = updateEntries.get(oldBookId.toLowerCase(Locale.ROOT));
         bookItem.setString(Constants.BOOK_ID_KEY, newBookId);
     }
 
-    public boolean shouldMigrate(NBTItem bookItem) {
+    public boolean shouldUpdate(NBTItem bookItem) {
         String oldBookId = bookItem.getString(Constants.BOOK_ID_KEY);
         return updateEntries.containsKey(oldBookId.toLowerCase(Locale.ROOT));
     }

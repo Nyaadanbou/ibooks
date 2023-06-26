@@ -64,8 +64,8 @@ public final class PlayerListener implements Listener {
         if (!nbtItem.hasTag(Constants.BOOK_ID_KEY))
             return;
 
-        if (InteractiveBooks.getMigrator().shouldMigrate(nbtItem)) {
-            InteractiveBooks.getMigrator().migrate(nbtItem);
+        if (InteractiveBooks.getInstance().getUpdater().shouldUpdate(nbtItem)) {
+            InteractiveBooks.getInstance().getUpdater().update(nbtItem);
         }
 
         IBook book = InteractiveBooks.getBook(nbtItem.getString(Constants.BOOK_ID_KEY));
