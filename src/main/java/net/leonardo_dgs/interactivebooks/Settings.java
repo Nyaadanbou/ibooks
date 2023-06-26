@@ -25,12 +25,12 @@ public final class Settings {
         config = SimplixBuilder
             .fromFile(new File(InteractiveBooks.getInstance().getDataFolder().getPath(), "config.yml"))
             .setReloadSettings(ReloadSettings.INTELLIGENT)
-            .addInputStreamFromResource("config.yml")
+            .addInputStream(InteractiveBooks.getInstance().getResource("config.yml"))
             .createConfig();
         updater = SimplixBuilder
             .fromFile(new File(InteractiveBooks.getInstance().getDataFolder(), "updater.yml"))
             .setReloadSettings(ReloadSettings.INTELLIGENT)
-            .addInputStreamFromResource("updater.yml")
+            .addInputStream(InteractiveBooks.getInstance().getResource("updater.yml"))
             .createConfig();
 
         loadBookConfig();
