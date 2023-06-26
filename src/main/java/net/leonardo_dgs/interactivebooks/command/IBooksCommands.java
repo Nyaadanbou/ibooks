@@ -8,7 +8,12 @@ import cloud.commandframework.minecraft.extras.AudienceProvider;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import cloud.commandframework.paper.PaperCommandManager;
 import net.leonardo_dgs.interactivebooks.InteractiveBooks;
-import net.leonardo_dgs.interactivebooks.command.command.*;
+import net.leonardo_dgs.interactivebooks.command.command.CommandCreate;
+import net.leonardo_dgs.interactivebooks.command.command.CommandGet;
+import net.leonardo_dgs.interactivebooks.command.command.CommandGive;
+import net.leonardo_dgs.interactivebooks.command.command.CommandList;
+import net.leonardo_dgs.interactivebooks.command.command.CommandOpen;
+import net.leonardo_dgs.interactivebooks.command.command.CommandReload;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 

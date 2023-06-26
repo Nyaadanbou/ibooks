@@ -4,6 +4,7 @@ import de.leonhard.storage.internal.FlatFile;
 import de.leonhard.storage.sections.FlatFileSection;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.text.Component;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,7 +17,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 
 public class IBook {
     // ---- Internal ----
@@ -172,7 +179,6 @@ public class IBook {
      *
      * @param player the player to get the data from for replacing placeholders
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void updateBookMeta(ItemStack book, Player player) {
         if (bookConfig.hasChanged()) {
             bookConfig.forceReload();
@@ -181,18 +187,11 @@ public class IBook {
             BookMeta bookMeta = (BookMeta) book.getItemMeta();
 
             // ---- Set placeholders for displayName, title, author, lore ----
-            Optional.ofNullable(this.displayName)
-                .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
-                .ifPresent(bookMeta::displayName);
-            Optional.ofNullable(this.title)
-                .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
-                .ifPresent(bookMeta::title);
-            Optional.ofNullable(this.author)
-                .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
-                .ifPresent(bookMeta::author);
-            bookMeta.lore(this.lore.stream()
-                .map(s -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, s)))
-                .toList());
+            Function<String, Component> toComponent = string -> BooksUtils.asComponent(BooksUtils.parsePlaceholder(player, string));
+            Optional.ofNullable(displayName).map(toComponent).ifPresent(bookMeta::displayName);
+            Optional.ofNullable(title).map(toComponent).ifPresent(bookMeta::title);
+            Optional.ofNullable(author).map(toComponent).ifPresent(bookMeta::author);
+            bookMeta.lore(lore.stream().map(toComponent).toList());
             bookMeta.setGeneration(generation);
 
             // ---- Set placeholders for pages ----
@@ -250,7 +249,7 @@ public class IBook {
 
     @Override
     public boolean equals(Object obj) {
-        if (!getClass().equals(obj.getClass()))
+        if (obj == null || !getClass().equals(obj.getClass()))
             return false;
         IBook other = (IBook) obj;
         return getId().equals(other.getId());

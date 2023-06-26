@@ -6,25 +6,39 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.BookMeta.Generation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class BooksUtils {
+public final class BooksUtils {
     @Getter
     private static final boolean isBookGenerationSupported = MinecraftVersion.getRunningVersion().isAfterOrEqual(MinecraftVersion.parse("1.10"));
 
-    public static Generation ofGeneration(String generation) {
-        return generation == null ? Generation.ORIGINAL : Generation.valueOf(generation.toUpperCase());
+    private BooksUtils() {
+        throw new UnsupportedOperationException("This class cannot be instantiated");
     }
 
-    public static Component parsePage(String page, Player player) {
+    public static @Nullable Generation ofGeneration(String generation) {
+        if (generation == null) {
+            return null;
+        }
+
+        return switch (generation.toUpperCase()) {
+            case "ORIGINAL" -> Generation.ORIGINAL;
+            case "COPY_OF_ORIGINAL" -> Generation.COPY_OF_ORIGINAL;
+            case "COPY_OF_COPY" -> Generation.COPY_OF_COPY;
+            case "TATTERED" -> Generation.TATTERED;
+            default -> null;
+        };
+    }
+
+    public static @NotNull Component parsePage(@NotNull String page, @NotNull Player player) {
         return MiniMessage.miniMessage().deserialize(parsePlaceholder(player, page));
     }
 
-    @NotNull
-    public static String parsePlaceholder(Player player, String s) {
+    public static @NotNull String parsePlaceholder(@NotNull Player player, @NotNull String s) {
         return PlaceholderHook.setPlaceholders(player, s);
     }
 
-    public static Component asComponent(@NotNull String s) {
+    public static @NotNull Component asComponent(@NotNull String s) {
         return MiniMessage.miniMessage().deserialize(s);
     }
 }

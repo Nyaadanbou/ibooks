@@ -1,6 +1,5 @@
 package net.leonardo_dgs.interactivebooks;
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.leonardo_dgs.interactivebooks.util.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

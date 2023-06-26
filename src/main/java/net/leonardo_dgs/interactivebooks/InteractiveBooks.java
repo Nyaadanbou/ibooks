@@ -1,8 +1,6 @@
 package net.leonardo_dgs.interactivebooks;
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.leonardo_dgs.interactivebooks.command.IBooksCommands;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -99,19 +97,11 @@ public final class InteractiveBooks extends JavaPlugin {
         // ---- Initialise item ID migrator ----
         updater = new BookUpdater();
 
-        // ---- NBT-API stuff ----
-        de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.replaceLogger(getLogger());
-        de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.disableUpdateCheck();
-        de.tr7zw.changeme.nbtapi.utils.MinecraftVersion.getVersion();
-
         // ---- Load all files ----
         ConfigManager.loadAll();
 
         // ---- Register listeners ----
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-
-        // ---- Metrics ----
-        new Metrics(this, 5483);
 
         // ---- Register commands ----
         try {
