@@ -15,7 +15,11 @@ version = "1.6.6"
 description = "Create cool interactive books!"
 
 dependencies {
+    // mewcraft libs
     compileOnly(project(":mewcore"))
+
+    // libs in core
+    compileOnly(libs.simplixstorage)
 
     // server api
     compileOnly(libs.server.paper)
