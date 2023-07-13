@@ -3,7 +3,6 @@ package net.leonardo_dgs.interactivebooks.util;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.leonardo_dgs.interactivebooks.Constants;
-import net.leonardo_dgs.interactivebooks.InteractiveBooks;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class BooksUtils {
+    private static final NamespacedKey KEY = new NamespacedKey("ibooks", Constants.BOOK_ID_KEY);
+
     public static @Nullable Generation ofGeneration(@Nullable String generation) {
         if (generation == null) {
             return null;
@@ -47,10 +48,9 @@ public final class BooksUtils {
             return null;
 
         String bookId = null;
-        NamespacedKey bookIdKey = new NamespacedKey(InteractiveBooks.getInstance(), Constants.BOOK_ID_KEY);
         PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-        if (container.has(bookIdKey, PersistentDataType.STRING)) {
-            bookId = container.get(bookIdKey, PersistentDataType.STRING);
+        if (container.has(KEY, PersistentDataType.STRING)) {
+            bookId = container.get(KEY, PersistentDataType.STRING);
         }
         return bookId;
     }
@@ -60,9 +60,8 @@ public final class BooksUtils {
         if (itemMeta == null)
             return null;
 
-        NamespacedKey bookIdKey = new NamespacedKey(InteractiveBooks.getInstance(), Constants.BOOK_ID_KEY);
         PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-        container.set(bookIdKey, PersistentDataType.STRING, bookId);
+        container.set(KEY, PersistentDataType.STRING, bookId);
         item.setItemMeta(itemMeta);
         return item;
     }
