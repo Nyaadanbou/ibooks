@@ -1,9 +1,9 @@
 import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
+    id("cc.mewcraft.repo-conventions")
     id("cc.mewcraft.java-conventions")
     id("cc.mewcraft.deploy-conventions")
-    id("cc.mewcraft.repository-conventions")
     id("cc.mewcraft.paper-plugins")
     alias(libs.plugins.pluginyml.paper)
 }
