@@ -1,24 +1,27 @@
 package net.leonardo_dgs.interactivebooks;
 
-import lombok.Getter;
 import net.leonardo_dgs.interactivebooks.command.IBooksCommands;
 import net.leonardo_dgs.interactivebooks.util.BooksUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 public final class InteractiveBooks extends JavaPlugin {
     private static InteractiveBooks INSTANCE;
     private static Map<String, IBook> BOOKS;
 
-    @Getter
     private BookIdentityUpdater updater;
+
+    public BookIdentityUpdater getUpdater() {
+        return updater;
+    }
 
     /**
      * Gets the instance of this plugin.

@@ -20,31 +20,31 @@ public class CommandCreate extends AbstractCommand {
     @Override
     public void register() {
         Command<CommandSender> createBookCommand = manager.commandBuilder("ibooks")
-            .literal("create")
-            .permission("interactivebooks.command.create")
-            .argument(StringArgument.of("book-id"))
-            .argument(StringArgument.of("name"))
-            .argument(StringArgument.of("title"))
-            .argument(StringArgument.of("author"))
-            .argument(EnumArgument.of(BookMeta.Generation.class, "generation"))
-            .handler(context -> {
-                CommandSender sender = context.getSender();
-                String bookId = context.get("book-id");
-                if (InteractiveBooks.getBook(bookId) != null) {
-                    sender.sendMessage("§c创建失败! 指定的书籍ID已存在.");
-                    return;
-                }
-                String name = context.get("name");
-                String title = context.get("title");
-                String author = context.get("author");
-                BookMeta.Generation generation = context.get("generation");
+                .literal("create")
+                .permission("interactivebooks.command.create")
+                .argument(StringArgument.of("book-id"))
+                .argument(StringArgument.of("name"))
+                .argument(StringArgument.of("title"))
+                .argument(StringArgument.of("author"))
+                .argument(EnumArgument.of(BookMeta.Generation.class, "generation"))
+                .handler(context -> {
+                    CommandSender sender = context.getSender();
+                    String bookId = context.get("book-id");
+                    if (InteractiveBooks.getBook(bookId) != null) {
+                        sender.sendMessage("§c创建失败! 指定的书籍ID已存在.");
+                        return;
+                    }
+                    String name = context.get("name");
+                    String title = context.get("title");
+                    String author = context.get("author");
+                    BookMeta.Generation generation = context.get("generation");
 
-                IBook createdBook = new IBook(bookId, name, null, title, author, generation, null);
-                createdBook.save();
-                InteractiveBooks.registerBook(createdBook);
-                sender.sendMessage("§a已创建新书籍!");
-            })
-            .build();
+                    IBook createdBook = new IBook(bookId, name, null, title, author, generation, null);
+                    createdBook.save();
+                    InteractiveBooks.registerBook(createdBook);
+                    sender.sendMessage("§a已创建新书籍!");
+                })
+                .build();
         manager.register(List.of(createBookCommand));
     }
 }

@@ -8,23 +8,25 @@ import cloud.commandframework.context.CommandContext;
 import net.leonardo_dgs.interactivebooks.IBook;
 import net.leonardo_dgs.interactivebooks.InteractiveBooks;
 import org.bukkit.command.CommandSender;
-import org.checkerframework.framework.qual.DefaultQualifier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.function.BiFunction;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import org.checkerframework.framework.qual.DefaultQualifier;
+
 @DefaultQualifier(NotNull.class)
 public class IBookArgument extends CommandArgument<CommandSender, IBook> {
     public IBookArgument(
-        boolean required,
-        String name,
-        String defaultValue,
-        BiFunction<CommandContext<CommandSender>, String, List<String>> suggestionsProvider,
-        ArgumentDescription defaultDescription
+            boolean required,
+            String name,
+            String defaultValue,
+            BiFunction<CommandContext<CommandSender>, String, List<String>> suggestionsProvider,
+            ArgumentDescription defaultDescription
     ) {
         super(required, name, new Parser(), defaultValue, IBook.class, suggestionsProvider, defaultDescription);
     }
@@ -44,8 +46,8 @@ public class IBookArgument extends CommandArgument<CommandSender, IBook> {
     public static final class Parser implements ArgumentParser<CommandSender, IBook> {
         @Override
         public ArgumentParseResult<IBook> parse(
-            final CommandContext<CommandSender> commandContext,
-            final Queue<String> inputQueue
+                final CommandContext<CommandSender> commandContext,
+                final Queue<String> inputQueue
         ) {
             @Nullable String input = inputQueue.peek();
             @Nullable IBook book = InteractiveBooks.getBook(input);
@@ -58,8 +60,8 @@ public class IBookArgument extends CommandArgument<CommandSender, IBook> {
 
         @Override
         public List<String> suggestions(
-            final CommandContext<CommandSender> commandContext,
-            final String input
+                final CommandContext<CommandSender> commandContext,
+                final String input
         ) {
             return new ArrayList<>(InteractiveBooks.getBooks().keySet());
         }
@@ -73,11 +75,11 @@ public class IBookArgument extends CommandArgument<CommandSender, IBook> {
         @Override
         public IBookArgument build() {
             return new IBookArgument(
-                this.isRequired(),
-                this.getName(),
-                this.getDefaultValue(),
-                this.getSuggestionsProvider(),
-                this.getDefaultDescription()
+                    this.isRequired(),
+                    this.getName(),
+                    this.getDefaultValue(),
+                    this.getSuggestionsProvider(),
+                    this.getDefaultDescription()
             );
         }
     }

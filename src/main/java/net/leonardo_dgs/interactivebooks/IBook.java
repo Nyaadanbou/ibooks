@@ -11,8 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +21,9 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class IBook {
     // ---- Internal ----
@@ -50,14 +51,14 @@ public class IBook {
      */
     IBook(String id, FlatFile bookConfig) {
         this(
-            id,
-            bookConfig.getString("name"),
-            bookConfig.getStringList("lore"),
-            bookConfig.getString("title"),
-            bookConfig.getString("author"),
-            BooksUtils.ofGeneration(bookConfig.getString("generation")),
-            mergeLines(bookConfig.getSection("pages")),
-            bookConfig.getStringList("open_command")
+                id,
+                bookConfig.getString("name"),
+                bookConfig.getStringList("lore"),
+                bookConfig.getString("title"),
+                bookConfig.getString("author"),
+                BooksUtils.ofGeneration(bookConfig.getString("generation")),
+                mergeLines(bookConfig.getSection("pages")),
+                bookConfig.getStringList("open_command")
         );
         this.bookConfig = bookConfig;
     }
@@ -75,14 +76,14 @@ public class IBook {
      * @param openCommands the commands that will open the book
      */
     public IBook(
-        @NotNull String id,
-        @NotNull String displayName,
-        @Nullable List<String> lore,
-        @NotNull String title,
-        @NotNull String author,
-        @NotNull BookMeta.Generation generation,
-        @Nullable List<String> pages,
-        @Nullable List<String> openCommands
+            @NotNull String id,
+            @NotNull String displayName,
+            @Nullable List<String> lore,
+            @NotNull String title,
+            @NotNull String author,
+            @NotNull BookMeta.Generation generation,
+            @Nullable List<String> pages,
+            @Nullable List<String> openCommands
     ) {
         this.id = id;
         this.displayName = displayName;
@@ -114,13 +115,13 @@ public class IBook {
      * @param pages       the pages that will be converted to the book item pages
      */
     public IBook(
-        @NotNull String id,
-        @NotNull String displayName,
-        @Nullable List<String> lore,
-        @NotNull String title,
-        @NotNull String author,
-        @NotNull BookMeta.Generation generation,
-        @Nullable List<String> pages
+            @NotNull String id,
+            @NotNull String displayName,
+            @Nullable List<String> lore,
+            @NotNull String title,
+            @NotNull String author,
+            @NotNull BookMeta.Generation generation,
+            @Nullable List<String> pages
     ) {
         this(id, displayName, lore, title, author, generation, pages, null);
     }

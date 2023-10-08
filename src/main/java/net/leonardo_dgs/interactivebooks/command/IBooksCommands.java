@@ -15,19 +15,20 @@ import net.leonardo_dgs.interactivebooks.command.command.CommandList;
 import net.leonardo_dgs.interactivebooks.command.command.CommandOpen;
 import net.leonardo_dgs.interactivebooks.command.command.CommandReload;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.Nullable;
+
 public class IBooksCommands extends PaperCommandManager<CommandSender> {
     public IBooksCommands(InteractiveBooks plugin) throws Exception {
         super(
-            plugin,
-            AsynchronousCommandExecutionCoordinator.<CommandSender>builder().build(),
-            Function.identity(),
-            Function.identity()
+                plugin,
+                AsynchronousCommandExecutionCoordinator.<CommandSender>builder().build(),
+                Function.identity(),
+                Function.identity()
         );
 
         // ---- Register Brigadier ----
@@ -48,17 +49,17 @@ public class IBooksCommands extends PaperCommandManager<CommandSender> {
 
         // ---- Change default exception messages ----
         new MinecraftExceptionHandler<CommandSender>()
-            .withDefaultHandlers()
-            .apply(this, sender -> AudienceProvider.nativeAudience().apply(sender));
+                .withDefaultHandlers()
+                .apply(this, sender -> AudienceProvider.nativeAudience().apply(sender));
 
         // ---- Register all commands ----
         Stream.of(
-            new CommandCreate(plugin, this),
-            new CommandGet(plugin, this),
-            new CommandGive(plugin, this),
-            new CommandList(plugin, this),
-            new CommandOpen(plugin, this),
-            new CommandReload(plugin, this)
+                new CommandCreate(plugin, this),
+                new CommandGet(plugin, this),
+                new CommandGive(plugin, this),
+                new CommandList(plugin, this),
+                new CommandOpen(plugin, this),
+                new CommandReload(plugin, this)
         ).forEach(AbstractCommand::register);
     }
 

@@ -5,6 +5,6 @@ open_book_on_join: ''
 # Book to open to a player when he joins the server the first time
 open_book_on_first_join: ''
 # Books given to the players when they join the server
-books_on_join: []
+books_on_join: [ ]
 # Books given to the players when they join the server the first time
-books_on_first_join: []
+books_on_first_join: [ ]

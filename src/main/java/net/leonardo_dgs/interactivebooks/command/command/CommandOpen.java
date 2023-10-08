@@ -21,27 +21,27 @@ public class CommandOpen extends AbstractCommand {
     @Override
     public void register() {
         Command<CommandSender> openBookCommand = manager.commandBuilder("ibooks")
-            .literal("open")
-            .permission("interactivebooks.command.open")
-            .argument(IBookArgument.of("book"))
-            .argument(PlayerArgument.optional("player"))
-            .handler(context -> {
-                CommandSender sender = context.getSender();
-                IBook book = context.get("book");
-                Optional<Player> player = context.getOptional("player");
-                if (player.isPresent()) {
-                    book.open(player.get());
-                    sender.sendMessage("§a强制让玩家 §6%player%§a 查看书籍: §6%book_id%§a."
-                        .replace("%book_id%", book.getId())
-                        .replace("%player%", player.get().getName())
-                    );
-                } else if (sender instanceof Player self) { // Player argument not present and sender is of Player
-                    book.open(self);
-                } else { // Player argument not present and sender is NOT of Player
-                    sender.sendMessage("§c必须指定一个玩家名.");
-                }
-            })
-            .build();
+                .literal("open")
+                .permission("interactivebooks.command.open")
+                .argument(IBookArgument.of("book"))
+                .argument(PlayerArgument.optional("player"))
+                .handler(context -> {
+                    CommandSender sender = context.getSender();
+                    IBook book = context.get("book");
+                    Optional<Player> player = context.getOptional("player");
+                    if (player.isPresent()) {
+                        book.open(player.get());
+                        sender.sendMessage("§a强制让玩家 §6%player%§a 查看书籍: §6%book_id%§a."
+                                .replace("%book_id%", book.getId())
+                                .replace("%player%", player.get().getName())
+                        );
+                    } else if (sender instanceof Player self) { // Player argument not present and sender is of Player
+                        book.open(self);
+                    } else { // Player argument not present and sender is NOT of Player
+                        sender.sendMessage("§c必须指定一个玩家名.");
+                    }
+                })
+                .build();
         manager.register(List.of(openBookCommand));
     }
 }

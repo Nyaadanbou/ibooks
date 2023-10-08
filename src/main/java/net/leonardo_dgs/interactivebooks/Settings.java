@@ -3,7 +3,6 @@ package net.leonardo_dgs.interactivebooks;
 import de.leonhard.storage.Config;
 import de.leonhard.storage.SimplixBuilder;
 import de.leonhard.storage.internal.settings.ReloadSettings;
-import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,22 +15,28 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class Settings {
-    @Getter
     private static Config config;
-    @Getter
     private static Config updater;
+
+    public static Config getConfig() {
+        return config;
+    }
+
+    public static Config getUpdater() {
+        return updater;
+    }
 
     public static void load() {
         config = SimplixBuilder
-            .fromFile(new File(InteractiveBooks.getInstance().getDataFolder().getPath(), "config.yml"))
-            .setReloadSettings(ReloadSettings.INTELLIGENT)
-            .addInputStream(InteractiveBooks.getInstance().getResource("config.yml"))
-            .createConfig();
+                .fromFile(new File(InteractiveBooks.getInstance().getDataFolder().getPath(), "config.yml"))
+                .setReloadSettings(ReloadSettings.INTELLIGENT)
+                .addInputStream(InteractiveBooks.getInstance().getResource("config.yml"))
+                .createConfig();
         updater = SimplixBuilder
-            .fromFile(new File(InteractiveBooks.getInstance().getDataFolder(), "updater.yml"))
-            .setReloadSettings(ReloadSettings.INTELLIGENT)
-            .addInputStream(InteractiveBooks.getInstance().getResource("updater.yml"))
-            .createConfig();
+                .fromFile(new File(InteractiveBooks.getInstance().getDataFolder(), "updater.yml"))
+                .setReloadSettings(ReloadSettings.INTELLIGENT)
+                .addInputStream(InteractiveBooks.getInstance().getResource("updater.yml"))
+                .createConfig();
 
         loadBookConfig();
         loadUpdaterConfig();
@@ -58,13 +63,13 @@ public final class Settings {
             if (bookFile.getName().endsWith(".yml")) {
                 String bookId = bookFile.getName().substring(0, bookFile.getName().length() - 4);
                 SimplixBuilder
-                    .fromFile(bookFile)
-                    .setReloadSettings(ReloadSettings.INTELLIGENT)
-                    .reloadCallback(flatFile -> {
-                        InteractiveBooks.unregisterBook(bookId);
-                        InteractiveBooks.registerBook(new IBook(bookId, flatFile));
-                    })
-                    .createConfig();
+                        .fromFile(bookFile)
+                        .setReloadSettings(ReloadSettings.INTELLIGENT)
+                        .reloadCallback(flatFile -> {
+                            InteractiveBooks.unregisterBook(bookId);
+                            InteractiveBooks.registerBook(new IBook(bookId, flatFile));
+                        })
+                        .createConfig();
             }
         }
     }

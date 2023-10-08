@@ -4,7 +4,6 @@ plugins {
     id("cc.mewcraft.repo-conventions")
     id("cc.mewcraft.java-conventions")
     id("cc.mewcraft.deploy-conventions")
-    id("cc.mewcraft.paper-plugins")
     alias(libs.plugins.pluginyml.paper)
 }
 
@@ -15,22 +14,15 @@ version = "1.6.6"
 description = "Create cool interactive books!"
 
 dependencies {
-    // mewcraft libs
-    compileOnly(project(":mewcore"))
+    // internal
+    implementation(libs.simplixstorage)
+    implementation(libs.bundles.cmds.paper)
 
-    // libs in core
-    compileOnly(libs.simplixstorage)
-
-    // server api
+    // server
     compileOnly(libs.server.paper)
 
-    // plugin libraries
-    compileOnly(libs.helper)
+    // standalone plugins
     compileOnly(libs.papi)
-
-    // compile time stuff
-    compileOnly("org.projectlombok", "lombok", "1.18.24")
-    annotationProcessor("org.projectlombok", "lombok", "1.18.24")
 }
 
 paper {
@@ -39,19 +31,10 @@ paper {
     version = "${project.version}"
     description = project.description
     apiVersion = "1.19"
-    authors = listOf("Nailm", "Leonardo_DGS")
+    authors = listOf("Leonardo_DGS")
+    contributors = listOf("Nailm")
 
     serverDependencies {
-        register("helper") {
-            required = true
-            joinClasspath = true
-            load = PaperPluginDescription.RelativeLoadOrder.OMIT
-        }
-        register("MewCore") {
-            required = true
-            joinClasspath = true
-            load = PaperPluginDescription.RelativeLoadOrder.OMIT
-        }
         register("PlaceholderAPI") {
             required = false
             joinClasspath = true

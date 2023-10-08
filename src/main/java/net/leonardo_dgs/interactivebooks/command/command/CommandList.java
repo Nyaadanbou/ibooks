@@ -19,17 +19,17 @@ public class CommandList extends AbstractCommand {
     @Override
     public void register() {
         Command<CommandSender> listBookCommand = manager.commandBuilder("ibooks")
-            .literal("list")
-            .permission("interactivebooks.command.list")
-            .handler(context -> {
-                CommandSender sender = context.getSender();
-                Component join = Component.join(
-                    JoinConfiguration.commas(true),
-                    InteractiveBooks.getBooks().keySet().stream().map(b -> Component.text(b).color(NamedTextColor.GOLD)).toList()
-                );
-                sender.sendMessage(Component.text("所有书籍: ").color(NamedTextColor.YELLOW).append(join));
-            })
-            .build();
+                .literal("list")
+                .permission("interactivebooks.command.list")
+                .handler(context -> {
+                    CommandSender sender = context.getSender();
+                    Component join = Component.join(
+                            JoinConfiguration.commas(true),
+                            InteractiveBooks.getBooks().keySet().stream().map(b -> Component.text(b).color(NamedTextColor.GOLD)).toList()
+                    );
+                    sender.sendMessage(Component.text("所有书籍: ").color(NamedTextColor.YELLOW).append(join));
+                })
+                .build();
         manager.register(List.of(listBookCommand));
     }
 }
